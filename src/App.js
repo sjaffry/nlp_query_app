@@ -18,7 +18,7 @@ function App() {
     });
 
     try {
-      const response = await axios.get(`https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod?${params}`);
+      const response = await axios.get(`https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod?${params}`);
       setResponse(response.data);
     } catch (error) {
       console.error('Error:', error);
@@ -27,7 +27,8 @@ function App() {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div>
+      <div>
       <form onSubmit={handleFormSubmit}>
         <input
           type="text"
@@ -37,24 +38,32 @@ function App() {
         />
         <input
           type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Query"
-        />
-        <input
-          type="text"
           value={businessName}
           onChange={(e) => setBusinessName(e.target.value)}
           placeholder="Business name"
         />
-        <button type="submit">Submit</button>
-      </form>
-      {response && (
         <div>
-          <h2>Response:</h2>
-          <pre>{JSON.stringify(response, null, 2)}</pre>
+        <textarea
+          rows="10" 
+          cols="30"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Query"
+        />
         </div>
+        <div>
+        <button type="submit">Submit</button>
+        </div>
+      </form>
+      </div>
+      <div>
+      {response && (
+          <div>
+          <h3>Response:</h3>
+          <pre>{JSON.stringify(response, null, 2)}</pre>
+          </div>
       )}
+      </div>
     </div>
   );
 }
