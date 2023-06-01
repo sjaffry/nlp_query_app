@@ -18,7 +18,11 @@ function App() {
     });
 
     try {
-      const response = await axios.get(`https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod?${params}`);
+      // Prod API
+      const response = await axios.get(`https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod?${params}`);
+      
+      // Test API
+      //const response = await axios.get(`https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod?${params}`);
       setResponse(response.data);
     } catch (error) {
       console.error('Error:', error);
