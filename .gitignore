@@ -7,6 +7,8 @@
 
 # testing
 /coverage
+/scratch
+App-test.js
 
 # production
 /build
@@ -17,6 +19,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+team-provider-info.json
 
 npm-debug.log*
 yarn-debug.log*

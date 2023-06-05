@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
+import { Amplify } from 'aws-amplify';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import awsExports from './aws-exports';
+Amplify.configure(awsExports);
 
-function App() {
+function App({ signOut, user }) {
   const [dateRange, setDateRange] = useState('');
   const [query, setQuery] = useState('');
   const [businessName, setBusinessName] = useState('');
@@ -10,20 +15,24 @@ function App() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    
-    const params = queryString.stringify({
-      date_range: dateRange,
-      query,
-      business_name: businessName,
-    });
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'JWT fefege...'
+    }
 
     try {
-      // Prod API
-      const response = await axios.get(`https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod?${params}`);
-      
-      // Test API
-      //const response = await axios.get(`https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod?${params}`);
-      setResponse(response.data);
+      const response = await axios.get('https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod', {
+          params: {
+            date_range: dateRange,
+            query: query,
+            business_name: businessName
+          },
+          headers: {
+            Authorization: user.signInUserSession.idToken.jwtToken
+          },
+        });
+        setResponse(response.data);
     } catch (error) {
       console.error('Error:', error);
       setResponse(null);
@@ -32,6 +41,10 @@ function App() {
 
   return (
     <div>
+      <div>
+        <h1>Hello {user.username}</h1>
+        <button class="signout-button" onClick={signOut} >Sign out</button>
+      </div>
       <div>
       <form onSubmit={handleFormSubmit}>
         <input
@@ -72,4 +85,4 @@ function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App);
