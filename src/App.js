@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import queryString from 'query-string';
 import { Amplify } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
@@ -10,7 +9,6 @@ Amplify.configure(awsExports);
 function App({ signOut, user }) {
   const [dateRange, setDateRange] = useState('');
   const [query, setQuery] = useState('');
-  const [businessName, setBusinessName] = useState('');
   const [response, setResponse] = useState(null);
 
   const handleFormSubmit = async (e) => {
@@ -25,8 +23,7 @@ function App({ signOut, user }) {
       const response = await axios.get('https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod', {
           params: {
             date_range: dateRange,
-            query: query,
-            business_name: businessName
+            query: query
           },
           headers: {
             Authorization: user.signInUserSession.idToken.jwtToken
@@ -52,12 +49,6 @@ function App({ signOut, user }) {
           value={dateRange}
           onChange={(e) => setDateRange(e.target.value)}
           placeholder="Date range"
-        />
-        <input
-          type="text"
-          value={businessName}
-          onChange={(e) => setBusinessName(e.target.value)}
-          placeholder="Business name"
         />
         <div>
         <textarea
