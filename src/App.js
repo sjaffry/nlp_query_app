@@ -21,7 +21,8 @@ function App({ signOut, user }) {
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState(null);
   const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [queryLoading, setQueryLoading] = useState(false);
+  const [summaryLoading, setSummaryLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
   const [selectedButton, setSelectedButton] = useState(null);
 
@@ -43,12 +44,14 @@ function App({ signOut, user }) {
   }, []);
   
   const handleButtonClick = async (index, date_range) => {
+    setSummary(null);
     setSelectedButton(index);
     setDateRange(date_range);
+    setSummaryLoading(true)
     
     // Call LLM Summary API
     try {
-      const response = await axios.get('https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod', {
+      const response = await axios.get('https://hn341rhbql.execute-api.us-east-1.amazonaws.com/prod', {
           params: {
             date_range: date_range
           },
@@ -57,6 +60,7 @@ function App({ signOut, user }) {
           },
         });
         setSummary(response.data);
+        setSummaryLoading(false)
     } catch (error) {
       console.error('Error:', error);
       setSummary(null);
@@ -71,7 +75,7 @@ function App({ signOut, user }) {
       alert('Select a week and enter a question before submitting.');
       return;
     }
-    setLoading(true);
+    setQueryLoading(true);
     setResponse(null);
 
     try {
@@ -90,7 +94,7 @@ function App({ signOut, user }) {
       setResponse(null);
     }
 
-    setLoading(false);
+    setQueryLoading(false);
   };
 
   return (
@@ -121,17 +125,20 @@ function App({ signOut, user }) {
       )}
       </div>
       <div className="container">
-      <div className="App half">
+      <div className="App">
+      <div className="half">
+        {summaryLoading && <Spinner />} 
+        <h3>Summary </h3>
         <textarea
         rows="8" 
         cols="50"
-        placeholder="Summary.."
         value={summary ? JSON.stringify(summary, null, 2) : ''}
         />
       </div>
+      </div>
       <div className="App half">
       <div>
-      <h3>Ask a specific question: </h3>
+      <h3>Ask a specific question </h3>
       <div>
       <form onSubmit={handleFormSubmit}>
         <div>
@@ -148,7 +155,7 @@ function App({ signOut, user }) {
         </div>
       </form>
       </div>
-      {loading && <Spinner />}      
+      {queryLoading && <Spinner />}      
       <div>
         <textarea
         rows="8" 
