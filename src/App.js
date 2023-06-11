@@ -20,6 +20,7 @@ function App({ signOut, user }) {
   const [dateRange, setDateRange] = useState('');
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState(null);
+  const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
   const [selectedButton, setSelectedButton] = useState(null);
@@ -41,10 +42,25 @@ function App({ signOut, user }) {
     fetchInitialData();
   }, []);
   
-  const handleButtonClick = (index, date_range) => {
+  const handleButtonClick = async (index, date_range) => {
     setSelectedButton(index);
     setDateRange(date_range);
-    console.log(date_range);
+    
+    // Call LLM Summary API
+    try {
+      const response = await axios.get('https://hn341rhbql.execute-api.us-east-1.amazonaws.com/prod', {
+          params: {
+            date_range: date_range
+          },
+          headers: {
+            Authorization: user.signInUserSession.idToken.jwtToken
+          },
+        });
+        setSummary(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+      setSummary(null);
+    }
   }
   
   const handleFormSubmit = async (e) => {
@@ -110,11 +126,12 @@ function App({ signOut, user }) {
         rows="8" 
         cols="50"
         placeholder="Summary.."
+        value={summary ? JSON.stringify(summary, null, 2) : ''}
         />
       </div>
       <div className="App half">
       <div>
-      <h3>Ask specific questions: </h3>
+      <h3>Ask a specific question: </h3>
       <div>
       <form onSubmit={handleFormSubmit}>
         <div>
