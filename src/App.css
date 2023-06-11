@@ -1,9 +1,29 @@
+.shift-right {
+  padding-left: 0.3cm; /* or margin-left: 2cm; depending on your layout needs */
+}
+
+.container {
+  display: flex;
+  height: 100vh; /* take up full viewport height */
+}
+
+.half {
+  flex: 1; /* each "half" takes up equal space */
+  padding: 10px; /* optional: add some padding around textareas */
+}
+
+textarea {
+  width: 100%; /* textarea takes up full width of its container */
+  height: 100%; /* textarea takes up full height of its container */
+  resize: none; /* optional: disable user resizing */
+}
+
 .App {
   display: flex;
   flex-direction: column;
-  justify-content: right;
+  justify-content: center;
   align-items: center;
-  height: 50vh;
+  height: 60vh;
 }
 
 .App-logo {

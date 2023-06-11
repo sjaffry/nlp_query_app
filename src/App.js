@@ -79,18 +79,15 @@ function App({ signOut, user }) {
 
   return (
     <div>
-      <div>
+      <div className="shift-right">
         <h3>Hello {user.username}</h3>
         <button class="signout-button" onClick={signOut} >Sign out</button>
         {externalData && (
           <h1>{externalData["Business name"]}</h1>
           )}
-      </div>
-      <div className="App">
-      <div>
       {externalData && (
           <div>
-          <h3>Data for week ending </h3>
+          <h3>Analyze data for week ending: </h3>
           {externalData["Subfolders"].map((subfolder, index) => {
             const date = new Date(subfolder.substring(0,4), subfolder.substring(4,6) - 1, subfolder.substring(6,8));
             const formattedDate = date.toDateString()
@@ -107,6 +104,17 @@ function App({ signOut, user }) {
           </div>
       )}
       </div>
+      <div className="container">
+      <div className="App half">
+        <textarea
+        rows="8" 
+        cols="50"
+        placeholder="Summary.."
+        />
+      </div>
+      <div className="App half">
+      <div>
+      <h3>Ask specific questions: </h3>
       <div>
       <form onSubmit={handleFormSubmit}>
         <div>
@@ -133,6 +141,8 @@ function App({ signOut, user }) {
         />
       </div>
       <button onClick={() => { setQuery(''); setResponse(null); }}>Clear</button>
+      </div>
+      </div>
       </div>
     </div>
   );
