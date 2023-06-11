@@ -32,7 +32,6 @@ function App({ signOut, user }) {
               Authorization: user.signInUserSession.idToken.jwtToken
             },
           });
-        // Do something with the response
         setExternalData(res.data);
       } catch (error) {
         console.error('Error:', error);
@@ -50,6 +49,12 @@ function App({ signOut, user }) {
   
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+    // Form validation
+    if (!query.trim() || !dateRange) {
+      alert('Select a week and enter a question before submitting.');
+      return;
+    }
     setLoading(true);
     setResponse(null);
 
@@ -81,11 +86,11 @@ function App({ signOut, user }) {
           <h1>{externalData["Business name"]}</h1>
           )}
       </div>
-      <div className="app">
+      <div className="App">
       <div>
       {externalData && (
           <div>
-          <h3>Week ending </h3>
+          <h3>Data for week ending </h3>
           {externalData["Subfolders"].map((subfolder, index) => {
             const date = new Date(subfolder.substring(0,4), subfolder.substring(4,6) - 1, subfolder.substring(6,8));
             const formattedDate = date.toDateString()
@@ -106,11 +111,11 @@ function App({ signOut, user }) {
       <form onSubmit={handleFormSubmit}>
         <div>
         <textarea
-          rows="5" 
-          cols="40"
+          rows="8" 
+          cols="50"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Query"
+          placeholder="Question.."
         />
         </div>
         <div>
@@ -118,15 +123,16 @@ function App({ signOut, user }) {
         </div>
       </form>
       </div>
-      {loading && <Spinner />}
+      {loading && <Spinner />}      
       <div>
-      {response && (
-          <div>
-          <h3>Response:</h3>
-          <pre>{JSON.stringify(response, null, 2)}</pre>
-          </div>
-      )}
+        <textarea
+        rows="8" 
+        cols="50"
+        value={response ? JSON.stringify(response, null, 2) : ''}
+        placeholder="Answer.."
+        />
       </div>
+      <button onClick={() => { setQuery(''); setResponse(null); }}>Clear</button>
       </div>
     </div>
   );
