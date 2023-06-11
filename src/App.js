@@ -48,7 +48,7 @@ function App({ signOut, user }) {
     
     // Call LLM Summary API
     try {
-      const response = await axios.get('https://hn341rhbql.execute-api.us-east-1.amazonaws.com/prod', {
+      const response = await axios.get('https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod', {
           params: {
             date_range: date_range
           },
