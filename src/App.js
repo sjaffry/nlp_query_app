@@ -60,11 +60,12 @@ function App({ signOut, user }) {
           },
         });
         setSummary(response.data);
-        setSummaryLoading(false)
     } catch (error) {
       console.error('Error:', error);
       setSummary(null);
     }
+
+    setSummaryLoading(false);
   }
   
   const handleFormSubmit = async (e) => {
@@ -99,7 +100,7 @@ function App({ signOut, user }) {
 
   return (
     <div>
-      <div className="shift-right">
+      <div className="shift-right Page half">
         <h3>Hello {user.username}</h3>
         <button class="signout-button" onClick={signOut} >Sign out</button>
         {externalData && (
@@ -125,12 +126,12 @@ function App({ signOut, user }) {
       )}
       </div>
       <div className="container">
-      <div className="App">
+      <div className="App Page half">
       <div className="half">
         {summaryLoading && <Spinner />} 
         <h3>Summary </h3>
         <textarea
-        rows="8" 
+        rows="20" 
         cols="50"
         value={summary ? JSON.stringify(summary, null, 2) : ''}
         />

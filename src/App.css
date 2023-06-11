@@ -1,5 +1,10 @@
+.Page {
+  display: flex;
+  flex-direction: column;
+}
+
 .shift-right {
-  padding-left: 0.3cm; /* or margin-left: 2cm; depending on your layout needs */
+  padding-left: 0.5cm; /* or margin-left: 2cm; depending on your layout needs */
 }
 
 .container {
@@ -9,7 +14,7 @@
 
 .half {
   flex: 1; /* each "half" takes up equal space */
-  padding: 10px; /* optional: add some padding around textareas */
+  padding: 20px; /* optional: add some padding around textareas */
 }
 
 textarea {
@@ -20,10 +25,10 @@ textarea {
 
 .App {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: 83vh;
+  height: 73vh;
 }
 
 .App-logo {
