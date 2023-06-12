@@ -26,14 +26,16 @@ def decode_jwt(token):
 def trimmed_foldername(full_folderpath):
     return os.path.basename(os.path.normpath(full_folderpath))
     
-    
+
 def list_subfolders(bucket_name, prefix):
     s3 = boto3.client('s3')
     response = s3.list_objects_v2(Bucket=bucket_name, Delimiter='/', Prefix=prefix)
     subfolders = []
 
     for content in response.get('CommonPrefixes', []):
-        subfolders.append(trimmed_foldername(content.get('Prefix')))
+        folder_name = trimmed_foldername(content.get('Prefix'))
+        if folder_name != 'archive':
+            subfolders.append(folder_name)
     return subfolders
 
 
@@ -41,7 +43,7 @@ def lambda_handler(event, context):
     bucket_name = os.environ['bucket_name']
     
     # Let's extract the business name from the token by looking at the group memebership of the user
-    token = event['token']
+    token = token = event['headers']['Authorization']
     decoded = decode_jwt(token)
     # We only ever expect the user to be in one group only - business rule
     business_name = decoded['cognito:groups'][0]
@@ -49,4 +51,17 @@ def lambda_handler(event, context):
     # Now we list all the subfolders for the business name
     prefix = f'transcribe-output/{business_name}/'
     subfolders = list_subfolders(bucket_name, prefix)
-    return subfolders
+    result = {
+        "Business name": business_name,
+        "Subfolders": subfolders
+        }
+        
+    return {
+        'statusCode': 200,
+        'headers': {
+            "Access-Control-Allow-Headers" : "Content-Type",
+            "Access-Control-Allow-Origin": "https://query.shoutavouch.com",
+            "Access-Control-Allow-Methods": "OPTIONS,PUT,POST,GET"
+    },    
+        'body': json.dumps(result)
+    } 

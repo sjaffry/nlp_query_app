@@ -21,6 +21,7 @@ function App({ signOut, user }) {
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
   const [queryLoading, setQueryLoading] = useState(false);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
@@ -29,14 +30,16 @@ function App({ signOut, user }) {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const res = await axios.get(' https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
+        const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
             headers: {
               Authorization: user.signInUserSession.idToken.jwtToken
             },
           });
         setExternalData(res.data);
+        setErrorMsg(null);
       } catch (error) {
         console.error('Error:', error);
+        setErrorMsg(error.message);
       }
     };
 
@@ -60,8 +63,10 @@ function App({ signOut, user }) {
           },
         });
         setSummary(response.data);
+        setErrorMsg(null);
     } catch (error) {
       console.error('Error:', error);
+      setErrorMsg(error.message);
       setSummary(null);
     }
 
@@ -90,8 +95,10 @@ function App({ signOut, user }) {
           },
         });
         setResponse(response.data);
+        setErrorMsg(null);
     } catch (error) {
       console.error('Error:', error);
+      setErrorMsg(error.message);
       setResponse(null);
     }
 
@@ -102,6 +109,9 @@ function App({ signOut, user }) {
     <div>
       <div className="shift-right Page half">
         <h3>Hello {user.username}</h3>
+        {errorMsg && (
+          <p style={{ color: 'red' }}>{errorMsg}</p>
+        )}
         <button class="signout-button" onClick={signOut} >Sign out</button>
         {externalData && (
           <h1>{externalData["Business name"]}</h1>
