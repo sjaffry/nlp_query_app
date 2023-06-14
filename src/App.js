@@ -30,7 +30,7 @@ function App({ signOut, user }) {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
+        const res = await axios.get('https://zsvveeu663.execute-api.us-east-1.amazonaws.com/Prod', {
             headers: {
               Authorization: user.signInUserSession.idToken.jwtToken
             },
@@ -54,7 +54,7 @@ function App({ signOut, user }) {
     
     // Call LLM Summary API
     try {
-      const response = await axios.get('https://hn341rhbql.execute-api.us-east-1.amazonaws.com/prod', {
+      const response = await axios.get('https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod', {
           params: {
             date_range: date_range
           },
@@ -84,8 +84,9 @@ function App({ signOut, user }) {
     setQueryLoading(true);
     setResponse(null);
 
+    // Call LLM Q&A API
     try {
-      const response = await axios.get('https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod', {
+      const response = await axios.get('https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod', {
           params: {
             date_range: dateRange,
             query: query
@@ -118,7 +119,7 @@ function App({ signOut, user }) {
           )}
       {externalData && (
           <div>
-          <h3>Analyze reviews  for week ending: </h3>
+          <h3>Analyze customer reviews  for week ending: </h3>
           {externalData["Subfolders"].map((subfolder, index) => {
             const date = new Date(subfolder.substring(0,4), subfolder.substring(4,6) - 1, subfolder.substring(6,8));
             const formattedDate = date.toDateString()
