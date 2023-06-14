@@ -118,7 +118,7 @@ function App({ signOut, user }) {
           )}
       {externalData && (
           <div>
-          <h3>Analyze data for week ending: </h3>
+          <h3>Analyze reviews  for week ending: </h3>
           {externalData["Subfolders"].map((subfolder, index) => {
             const date = new Date(subfolder.substring(0,4), subfolder.substring(4,6) - 1, subfolder.substring(6,8));
             const formattedDate = date.toDateString()
@@ -137,7 +137,7 @@ function App({ signOut, user }) {
       </div>
       <div className="container">
       <div className="App Page half">
-      <div className="half">
+      <div  >
         {summaryLoading && <Spinner />} 
         <h3>Summary </h3>
         <textarea
