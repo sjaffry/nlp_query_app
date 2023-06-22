@@ -1,37 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
 import axios from 'axios';
 import { Amplify } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { List, ListItem, ListItemIcon, Box, Paper, TextField, Typography, Button, CircularProgress } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import BusinessIcon from '@mui/icons-material/Business';
 Amplify.configure(awsExports);
 
-function App({ signOut, user }) {
-  const Spinner = () => (
-    <div className="spinner">
-      <div className="spinner-dot spinner-dot1"></div>
-      <div className="spinner-dot spinner-dot2"></div>
-      <div className="spinner-dot spinner-dot3"></div>
-      <div className="spinner-dot spinner-dot4"></div>
-    </div>
-  );
-  
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#000000',
+    },
+  },
+});
+
+const App = ({ signOut, user }) => {
+  const [selectedTile, setSelectedTile] = useState(null);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [dateRange, setDateRange] = useState('');
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState(null);
   const [summary, setSummary] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [queryLoading, setQueryLoading] = useState(false);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
-  const [selectedButton, setSelectedButton] = useState(null);
 
+
+// Call page load API
   useEffect(() => {
     const fetchInitialData = async () => {
-      // Call page load API
       try {
-        const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
+        const res = await axios.get('https://zsvveeu663.execute-api.us-east-1.amazonaws.com/Prod', {
             headers: {
               Authorization: user.signInUserSession.idToken.jwtToken
             },
@@ -43,19 +47,19 @@ function App({ signOut, user }) {
         setErrorMsg(error.message);
       }
     };
-
     fetchInitialData();
   }, []);
-  
-  const handleButtonClick = async (index, date_range) => {
+
+
+// Call LLM Summary API
+  const handleTileClick = async (index, date_range) => {
+    setSummaryLoading(true);
     setSummary(null);
-    setSelectedButton(index);
+    setSelectedTile(index);
     setDateRange(date_range);
-    setSummaryLoading(true)
     
-    // Call LLM Summary API
     try {
-      const response = await axios.get('https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod', {
+      const response = await axios.get('https://hn341rhbql.execute-api.us-east-1.amazonaws.com/prod', {
           params: {
             date_range: date_range
           },
@@ -73,116 +77,125 @@ function App({ signOut, user }) {
 
     setSummaryLoading(false);
   }
-  
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+
+// Call LLM Q&A API
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     // Form validation
     if (!query.trim() || !dateRange) {
-      alert('Select a week and enter a question before submitting.');
-      return;
-    }
-    setQueryLoading(true);
-    setResponse(null);
-
-    // Call LLM Q&A API
-    try {
-      const response = await axios.get('https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod', {
-          params: {
-            date_range: dateRange,
-            query: query
-          },
-          headers: {
-            Authorization: user.signInUserSession.idToken.jwtToken
-          },
-        });
-        setResponse(response.data);
-        setErrorMsg(null);
-    } catch (error) {
-      console.error('Error:', error);
-      setErrorMsg(error.message);
+        alert('Select a week and enter a question before submitting.');
+        return;
+      }
+      setSubmitLoading(true);
       setResponse(null);
-    }
+  
+      try {
+        const response = await axios.get('https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod', {
+            params: {
+              date_range: dateRange,
+              query: query
+            },
+            headers: {
+              Authorization: user.signInUserSession.idToken.jwtToken
+            },
+          });
+          setResponse(response.data);
+          setErrorMsg(null);
+      } catch (error) {
+        console.error('Error:', error);
+        setErrorMsg(error.message);
+        setResponse(null);
+      }
 
-    setQueryLoading(false);
+      setSubmitLoading(false);
   };
 
   return (
-    <div>
-      <div className="shift-right Page half">
-        <h3>Hello {user.username}</h3>
-        {errorMsg && (
-          <p style={{ color: 'red' }}>{errorMsg}</p>
-        )}
-        <button class="signout-button" onClick={signOut} >Sign out</button>
-        {externalData && (
-          <h1>{externalData["Business name"]}</h1>
+    <ThemeProvider theme={theme}>
+      <Box sx={{ display: 'flex', bgcolor: 'white', height: '100vh' }}>
+        <Button variant="contained" sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}} onClick={signOut}>
+          Logout
+        </Button>
+        <Box component={Paper} sx={{ width: '20%', p: 2, height: '100%', bgcolor: '#1d2636', color: 'white' }}>
+          {externalData && (
+          <Typography variant="h4" gutterBottom color='#6366F1'>{externalData["Business name"]}</Typography>
           )}
-      {externalData && (
-          <div>
-          <h3>Analyze customer reviews  for week ending: </h3>
-          {externalData["Subfolders"].map((subfolder, index) => {
-            const date = new Date(subfolder.substring(0,4), subfolder.substring(4,6) - 1, subfolder.substring(6,8));
-            const formattedDate = date.toDateString()
-            return (
-              <button 
-                key={index} 
-                onClick={() => handleButtonClick(index, subfolder)}
-                style={{backgroundColor: selectedButton === index ? 'lightblue' : 'initial'}}
-              >
-                {formattedDate}
-              </button>
-            );
-          })}         
-          </div>
-      )}
-      </div>
-      <div className="container">
-      <div className="App Page half">
-      <div  >
-        {summaryLoading && <Spinner />} 
-        <h3>Summary </h3>
-        <textarea
-        rows="20" 
-        cols="50"
-        value={summary ? JSON.stringify(summary, null, 2) : ''}
-        />
-      </div>
-      </div>
-      <div className="App half">
-      <div>
-      <h3>Ask a specific question </h3>
-      <div>
-      <form onSubmit={handleFormSubmit}>
-        <div>
-        <textarea
-          rows="8" 
-          cols="50"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Question.."
-        />
-        </div>
-        <div>
-        <button type="submit">Submit</button>
-        </div>
-      </form>
-      </div>
-      {queryLoading && <Spinner />}      
-      <div>
-        <textarea
-        rows="8" 
-        cols="50"
-        value={response ? JSON.stringify(response, null, 2) : ''}
-        placeholder="Answer.."
-        />
-      </div>
-      <button onClick={() => { setQuery(''); setResponse(null); }}>Clear</button>
-      </div>
-      </div>
-      </div>
-    </div>
+          <List>
+            <ListItem sx={{ mb: 2 }}>
+              <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
+              Summary & Q&A
+            </ListItem>
+            <ListItem sx={{ mb: 2 }}>
+              <ListItemIcon><BusinessIcon sx={{ color: 'white' }}/></ListItemIcon>
+              Itemized Analytics
+            </ListItem>
+          </List>
+        </Box>
+        <Box sx={{ width: '80%', p: 2 }}>
+          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.username}</Typography>
+          {errorMsg && (
+          <p style={{ color: 'red' }}>{errorMsg}</p>
+          )}
+          <Typography variant="h5" gutterBottom>Analyze weekly reviews</Typography>
+          {externalData && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
+                {externalData["Subfolders"].map((subfolder, index) => {
+                    const date = new Date(subfolder.substring(0,4), subfolder.substring(4,6) - 1, subfolder.substring(6,8));
+                    const formattedDate = date.toDateString()
+                    return (
+                    <Button
+                        variant="contained"
+                        sx={{
+                        width: '30%',
+                        p: 2,
+                        backgroundColor: selectedTile === index ? '#1d2636' : 'white',
+                        color: selectedTile === index ? 'white' : '#1d2636',
+                        '&:hover': {
+                            backgroundColor: selectedTile === index ? '#1d2636' : 'white',
+                        },
+                        }}
+                        onClick={() => handleTileClick(index, subfolder)}
+                    >
+                        {formattedDate}
+                    </Button>
+                    );
+                })}
+          {summaryLoading && <CircularProgress />}
+          </Box>
+          )}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
+              <Typography variant="h5" gutterBottom>Summary</Typography>
+              <TextField multiline variant="outlined" rows={8} fullWidth value={summary ? JSON.stringify(summary, null, 2) : ''}/>
+            </Paper>
+            <Paper sx={{ width: '42%', display: 'flex',flexDirection: 'column', justifyContent: 'space-between', p: 2, borderColor: 'black', border: 0.3 }}>
+              <Typography variant="h5" gutterBottom>Q&A</Typography>
+              <TextField 
+                multiline 
+                variant="outlined" 
+                rows={3} 
+                sx={{ mb: 2 }} 
+                value={query} 
+                onChange={(e) => setQuery(e.target.value)} 
+                placeholder="Write your question here.." />
+              <TextField multiline 
+                variant="outlined" 
+                rows={5} 
+                value={response ? JSON.stringify(response, null, 2) : ''} 
+                placeholder="Answer.." />
+              <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                <Button variant="outlined" sx={{ mr: 1, borderColor: 'black' }} onClick={handleSubmit}>Submit</Button>
+                <Button variant="outlined" sx={{ borderColor: 'black' }} onClick={() => { setQuery(''); setResponse(null); }}>Clear</Button>
+              </Box>
+              {submitLoading && <CircularProgress />}
+            </Paper>
+          </Box>
+        </Box>
+      </Box>
+    </ThemeProvider>
   );
 }
 
 export default withAuthenticator(App);
+
