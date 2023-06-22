@@ -35,7 +35,7 @@ const App = ({ signOut, user }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const res = await axios.get('https://zsvveeu663.execute-api.us-east-1.amazonaws.com/Prod', {
+        const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
             headers: {
               Authorization: user.signInUserSession.idToken.jwtToken
             },
@@ -59,7 +59,7 @@ const App = ({ signOut, user }) => {
     setDateRange(date_range);
     
     try {
-      const response = await axios.get('https://hn341rhbql.execute-api.us-east-1.amazonaws.com/prod', {
+      const response = await axios.get('https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod', {
           params: {
             date_range: date_range
           },
@@ -91,7 +91,7 @@ const App = ({ signOut, user }) => {
       setResponse(null);
   
       try {
-        const response = await axios.get('https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod', {
+        const response = await axios.get('https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod', {
             params: {
               date_range: dateRange,
               query: query
