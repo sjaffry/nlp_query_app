@@ -7,7 +7,8 @@ import awsExports from './aws-exports';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { List, ListItem, ListItemIcon, Box, Paper, TextField, Typography, Button, CircularProgress } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import BusinessIcon from '@mui/icons-material/Business';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import { Link } from "react-router-dom";
 Amplify.configure(awsExports);
 
 
@@ -118,22 +119,24 @@ const App = ({ signOut, user }) => {
           Logout
         </Button>
         <Box component={Paper} sx={{ width: '20%', p: 2, height: '100%', bgcolor: '#1d2636', color: 'white' }}>
-          {externalData && (
-          <Typography variant="h4" gutterBottom color='#6366F1'>{externalData["Business name"]}</Typography>
-          )}
+        <Typography variant="h4" gutterBottom color='#6366F1'>{user.signInUserSession.idToken.payload['cognito:groups']}</Typography>
           <List>
             <ListItem sx={{ mb: 2 }}>
               <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
+              <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
               Summary & Q&A
+              </Link>
             </ListItem>
             <ListItem sx={{ mb: 2 }}>
-              <ListItemIcon><BusinessIcon sx={{ color: 'white' }}/></ListItemIcon>
-              Itemized Analytics
+              <ListItemIcon><BarChartIcon sx={{ color: 'white' }}/></ListItemIcon>
+              <Link to="/itemized_analytics" style={{ color: 'white', textDecoration: 'none' }}>
+                Itemized Analytics
+              </Link>
             </ListItem>
           </List>
         </Box>
         <Box sx={{ width: '80%', p: 2 }}>
-          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.username}</Typography>
+          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.signInUserSession.idToken.payload.given_name}</Typography>
           {errorMsg && (
           <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
@@ -161,12 +164,12 @@ const App = ({ signOut, user }) => {
                     </Button>
                     );
                 })}
-          {summaryLoading && <CircularProgress />}
           </Box>
           )}
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
               <Typography variant="h5" gutterBottom>Summary</Typography>
+              {summaryLoading && <CircularProgress />}
               <TextField multiline variant="outlined" rows={8} fullWidth value={summary ? JSON.stringify(summary, null, 2) : ''}/>
             </Paper>
             <Paper sx={{ width: '42%', display: 'flex',flexDirection: 'column', justifyContent: 'space-between', p: 2, borderColor: 'black', border: 0.3 }}>
