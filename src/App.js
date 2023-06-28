@@ -23,20 +23,21 @@ const theme = createTheme({
 const App = ({ signOut, user }) => {
   const [selectedTile, setSelectedTile] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [dateRange, setDateRange] = useState('');
+  const [reviewDate, setReviewDate] = useState('');
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState(null);
   const [summary, setSummary] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
+  const [dashboardUrl, setDashboardUrl] = useState(null);
 
 
 // Call page load API
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
+        const res = await axios.get('https://zsvveeu663.execute-api.us-east-1.amazonaws.com/Prod', {
             headers: {
               Authorization: user.signInUserSession.idToken.jwtToken
             },
@@ -48,35 +49,61 @@ const App = ({ signOut, user }) => {
         setErrorMsg(error.message);
       }
     };
+
     fetchInitialData();
+
   }, []);
 
 
-// Call LLM Summary API
-  const handleTileClick = async (index, date_range) => {
+// Call LLM Summary API and get embedded QuickSight dashboard
+  const handleTileClick = async (index, asAtDate) => {
     setSummaryLoading(true);
     setSummary(null);
     setSelectedTile(index);
-    setDateRange(date_range);
-    
-    try {
-      const response = await axios.get('https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod', {
-          params: {
-            date_range: date_range
-          },
-          headers: {
-            Authorization: user.signInUserSession.idToken.jwtToken
-          },
-        });
-        setSummary(response.data);
-        setErrorMsg(null);
-    } catch (error) {
+    setReviewDate(asAtDate);
+    const dateString = asAtDate.substring(0,4)+'/'+asAtDate.substring(4,6)+'/'+asAtDate.substring(6,8);
+    const encodedDateFrom = encodeURIComponent(dateString);
+    const encodedDateTo = encodeURIComponent(dateString);
+
+    // Call LLM Summary API
+    const url1 = 'https://hn341rhbql.execute-api.us-east-1.amazonaws.com/prod';
+
+    axios.get(url1, {
+      params: {
+        date_range: asAtDate
+      },
+      headers: {
+        Authorization: user.signInUserSession.idToken.jwtToken
+      }
+    })
+    .then(response => {
+      setSummary(response.data);
+      setErrorMsg(null);
+      setSummaryLoading(false);
+    })
+    .catch(error => {
       console.error('Error:', error);
       setErrorMsg(error.message);
       setSummary(null);
-    }
+    });
 
-    setSummaryLoading(false);
+
+    // Call Get Embedded Dashboard API
+    const url2 = 'https://3mxx6rl744.execute-api.us-east-1.amazonaws.com/prod';
+
+    axios.get(url2, {
+      headers: {
+        Authorization: user.signInUserSession.idToken.jwtToken
+      }
+    })
+    .then(response => {
+      console.log('URL:'+response.data);
+      const baseUrl = response.data;
+      setDashboardUrl(`${baseUrl}#p.dateFrom=${encodedDateFrom}&p.dateTo=${encodedDateTo}`);
+    })
+    .catch(error => {
+      console.error('Error fetching embedded dashboard url', error);
+    });
   }
 
 // Call LLM Q&A API
@@ -84,7 +111,7 @@ const App = ({ signOut, user }) => {
     event.preventDefault();
 
     // Form validation
-    if (!query.trim() || !dateRange) {
+    if (!query.trim() || !reviewDate) {
         alert('Select a week and enter a question before submitting.');
         return;
       }
@@ -92,9 +119,9 @@ const App = ({ signOut, user }) => {
       setResponse(null);
   
       try {
-        const response = await axios.get('https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod', {
+        const response = await axios.get('https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod', {
             params: {
-              date_range: dateRange,
+              date_range: reviewDate,
               query: query
             },
             headers: {
@@ -124,7 +151,7 @@ const App = ({ signOut, user }) => {
             <ListItem sx={{ mb: 2 }}>
               <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
               <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-              Summary & Q&A
+                Summary & Q&A
               </Link>
             </ListItem>
             <ListItem sx={{ mb: 2 }}>
@@ -135,7 +162,7 @@ const App = ({ signOut, user }) => {
             </ListItem>
           </List>
         </Box>
-        <Box sx={{ width: '80%', p: 2 }}>
+        <Box sx={{ width: '80%', p: 2, overflow: 'auto' }}>
           <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.signInUserSession.idToken.payload.given_name}</Typography>
           {errorMsg && (
           <p style={{ color: 'red' }}>{errorMsg}</p>
@@ -166,7 +193,7 @@ const App = ({ signOut, user }) => {
                 })}
           </Box>
           )}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', mb: 6, justifyContent: 'space-between' }}>
             <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
               <Typography variant="h5" gutterBottom>Summary</Typography>
               {summaryLoading && <CircularProgress />}
@@ -194,6 +221,16 @@ const App = ({ signOut, user }) => {
               {submitLoading && <CircularProgress />}
             </Paper>
           </Box>
+          {dashboardUrl && (
+          <Box sx={{ width: '100%', height: '500px' }}>
+            <iframe
+              src= {dashboardUrl}
+              width="100%"
+              height="100%"
+              title="Embedded Content"
+            ></iframe>
+          </Box>
+          )}
         </Box>
       </Box>
     </ThemeProvider>
