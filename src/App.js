@@ -77,7 +77,8 @@ const App = ({ signOut, user }) => {
       }
     })
     .then(response => {
-      setSummary(response.data);
+      const htmlText = response.data.replace(/\n/g, '');
+      setSummary(htmlText);
       setErrorMsg(null);
       setSummaryLoading(false);
     })
