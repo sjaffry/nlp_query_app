@@ -76,10 +76,7 @@ const handleFileUpload = async (event) => {
   const fileType = file.type;
   const fileName = file.name;
   //PROD URL
-  //const url = "https://mvqwikiek9.execute-api.us-east-1.amazonaws.com/prod?"
-  // PROD URL
-  //TEST URL
-  const url = "https://uu5dql8v6h.execute-api.us-east-1.amazonaws.com/prod?"
+  const url = "https://mvqwikiek9.execute-api.us-east-1.amazonaws.com/prod?"
   const signUrl = url.concat("business_name="+business_name+"&file_name="+fileName+"&upload_type=document");
   axios.get(signUrl)
   .then(response => {
