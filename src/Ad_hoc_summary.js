@@ -41,13 +41,8 @@ const Ad_hoc_summary = ({ signOut, user }) => {
     setSummary(null);
 
     // Call LLM Summary API
-    // DEV ENV
-    const url1 = 'https://6igh0lnwua.execute-api.us-east-1.amazonaws.com/prod';
+    const url1 = 'https://nvo134vi7a.execute-api.us-east-1.amazonaws.com/Prod';
 
-    // PROD ENV
-    //const url1 = https://nvo134vi7a.execute-api.us-east-1.amazonaws.com/Prod?;
-
-    //const llmUrl = url1+'file_name='+fileName;
     axios.get(url1, {
       params: {
         file_name: fileName
