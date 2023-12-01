@@ -20,8 +20,7 @@ const theme = createTheme({
   },
 });
 
-const App = ({ signOut, user }) => {
-  const [selectedTile, setSelectedTile] = useState(null);
+const Ad_hoc_summary = ({ signOut, user }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [reviewDate, setReviewDate] = useState('');
   const [query, setQuery] = useState('');
@@ -29,56 +28,37 @@ const App = ({ signOut, user }) => {
   const [summary, setSummary] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
-  const [externalData, setExternalData] = useState(null);
-  const [dashboardUrl, setDashboardUrl] = useState(null);
+  const [file, setFile] = useState(null);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [showFilename, setShowFilename] = useState(false);
+  const business_name = user.signInUserSession.idToken.payload['cognito:groups']
 
+  useEffect(() => {}, []);
 
-// Call page load API
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
-            headers: {
-              Authorization: user.signInUserSession.idToken.jwtToken
-            },
-          });
-        setExternalData(res.data);
-        setErrorMsg(null);
-      } catch (error) {
-        console.error('Error:', error);
-        setErrorMsg(error.message);
-      }
-    };
-
-    fetchInitialData();
-
-  }, []);
-
-
-// Call LLM Summary API and get embedded QuickSight dashboard
-  const handleTileClick = async (index, asAtDate) => {
+// Call LLM Summary API
+  const GenerateSummary = async (fileName) => {
     setSummaryLoading(true);
     setSummary(null);
-    setSelectedTile(index);
-    setReviewDate(asAtDate);
-    const dateString = asAtDate.substring(0,4)+'/'+asAtDate.substring(4,6)+'/'+asAtDate.substring(6,8);
-    const encodedDateFrom = encodeURIComponent(dateString);
-    const encodedDateTo = encodeURIComponent(dateString);
 
     // Call LLM Summary API
-    const url1 = 'https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod';
+    // DEV ENV
+    const url1 = 'https://6igh0lnwua.execute-api.us-east-1.amazonaws.com/prod';
 
+    // PROD ENV
+    //const url1 = https://nvo134vi7a.execute-api.us-east-1.amazonaws.com/Prod?;
+
+    //const llmUrl = url1+'file_name='+fileName;
     axios.get(url1, {
       params: {
-        date_range: asAtDate
+        file_name: fileName
       },
       headers: {
         Authorization: user.signInUserSession.idToken.jwtToken
       }
     })
     .then(response => {
-      const htmlText = response.data.replace(/\n/g, '');
-      setSummary(htmlText);
+      const llmText = response.data.replace(/\n/g, '');
+      setSummary(llmText);
       setErrorMsg(null);
       setSummaryLoading(false);
     })
@@ -87,25 +67,44 @@ const App = ({ signOut, user }) => {
       setErrorMsg(error.message);
       setSummary(null);
     });
-
-
-    // Call Get Embedded Dashboard API
-    const url2 = 'https://dh9lkmru1d.execute-api.us-east-1.amazonaws.com/prod';
-
-    axios.get(url2, {
-      headers: {
-        Authorization: user.signInUserSession.idToken.jwtToken
-      }
-    })
-    .then(response => {
-      console.log('URL:'+response.data);
-      const baseUrl = response.data;
-      setDashboardUrl(`${baseUrl}#p.dateFrom=${encodedDateFrom}&p.dateTo=${encodedDateTo}`);
-    })
-    .catch(error => {
-      console.error('Error fetching embedded dashboard url', error);
-    });
   }
+
+// S3 Upload
+const handleFileUpload = async (event) => {
+  const file = event.target.files[0];
+  setFile(file);
+  const fileType = file.type;
+  const fileName = file.name;
+  //PROD URL
+  //const url = "https://mvqwikiek9.execute-api.us-east-1.amazonaws.com/prod?"
+  // PROD URL
+  //TEST URL
+  const url = "https://uu5dql8v6h.execute-api.us-east-1.amazonaws.com/prod?"
+  const signUrl = url.concat("business_name="+business_name+"&file_name="+fileName+"&upload_type=document");
+  axios.get(signUrl)
+  .then(response => {
+    var signedRequest = response.data.uploadURL;
+    var options = {
+      headers: {
+        'Content-Type': fileType,
+      }
+    };
+    setShowSpinner(true);
+    axios.put(signedRequest,file,options)
+    .then(
+      result => { 
+        setShowSpinner(false);
+        setShowFilename(true);
+        GenerateSummary(file.name)
+      })
+    .catch(error => {
+      alert("ERROR " + JSON.stringify(error));
+    })
+  })
+  .catch(error => {
+    alert(JSON.stringify(error));
+  })
+};  
 
 // Call LLM Q&A API
   const handleSubmit = async (event) => {
@@ -120,7 +119,7 @@ const App = ({ signOut, user }) => {
       setResponse(null);
   
       try {
-        const response = await axios.get('https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod', {
+        const response = await axios.get('https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod', {
             params: {
               date_range: reviewDate,
               query: query
@@ -147,17 +146,17 @@ const App = ({ signOut, user }) => {
           Logout
         </Button>
         <Box component={Paper} sx={{ width: '20%', p: 2, height: '100%', bgcolor: '#1d2636', color: 'white' }}>
-        <Typography variant="h4" gutterBottom color='#6366F1'>{user.signInUserSession.idToken.payload['cognito:groups']}</Typography>
+        <Typography variant="h4" gutterBottom color='#6366F1'>{business_name}</Typography>
           <List>
             <ListItem sx={{ mb: 2 }}>
               <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
               <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-                Weekly summary
+                Weekly summaries
               </Link>
             </ListItem>
             <ListItem sx={{ mb: 2 }}>
               <ListItemIcon><BarChartIcon sx={{ color: 'white' }}/></ListItemIcon>
-              <Link to="/Ad_hoc_summary" style={{ color: 'white', textDecoration: 'none' }}>
+              <Link to="/itemized_analytics" style={{ color: 'white', textDecoration: 'none' }}>
                 Ad-hoc summary
               </Link>
             </ListItem>
@@ -168,32 +167,23 @@ const App = ({ signOut, user }) => {
           {errorMsg && (
           <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
-          <Typography variant="h5" gutterBottom>Analyze weekly reviews</Typography>
-          {externalData && (
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
-                {externalData["Subfolders"].map((subfolder, index) => {
-                    const date = new Date(subfolder.substring(0,4), subfolder.substring(4,6) - 1, subfolder.substring(6,8));
-                    const formattedDate = date.toDateString()
-                    return (
-                    <Button
-                        variant="contained"
-                        sx={{
-                        width: '30%',
-                        p: 2,
-                        backgroundColor: selectedTile === index ? '#1d2636' : 'white',
-                        color: selectedTile === index ? 'white' : '#1d2636',
-                        '&:hover': {
-                            backgroundColor: selectedTile === index ? '#1d2636' : 'white',
-                        },
-                        }}
-                        onClick={() => handleTileClick(index, subfolder)}
-                    >
-                        {formattedDate}
-                    </Button>
-                    );
-                })}
+          <Typography variant="h5" gutterBottom>Analyze reviews ad-hoc</Typography>
+          <Box sx={{ display: 'flex', mb: 3 }}>
+            <Button
+              variant="contained"
+              component="label"
+              sx={{ width: '30%', p: 2, mr: 2 }}
+            >
+              Upload File
+              <input
+                type="file"
+                hidden
+                onChange={handleFileUpload}
+              />
+            </Button>
+              {showSpinner && <CircularProgress />}
+              {showFilename && <Typography variant="subtitle1">{file.name}</Typography>}
           </Box>
-          )}
           <Box sx={{ display: 'flex', mb: 6, justifyContent: 'space-between' }}>
             <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
               <Typography variant="h5" gutterBottom>Summary</Typography>
@@ -222,20 +212,11 @@ const App = ({ signOut, user }) => {
               {submitLoading && <CircularProgress />}
             </Paper>
           </Box>
-          {dashboardUrl && (
-          <Box sx={{ width: '100%', height: '500px' }}>
-            <iframe
-              src= {dashboardUrl}
-              width="100%"
-              height="100%"
-              title="Embedded Content"
-            ></iframe>
-          </Box>
-          )}
         </Box>
       </Box>
     </ThemeProvider>
   );
 }
 
-export default withAuthenticator(App);
+export default withAuthenticator(Ad_hoc_summary);
+

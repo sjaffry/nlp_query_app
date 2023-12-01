@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import Itemized_analytics from './Itemized_analytics';
+import Ad_hoc_summary from './Ad_hoc_summary';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -11,7 +11,7 @@ root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/itemized_analytics" element={<Itemized_analytics />} />
+        <Route path="/Ad_hoc_summary" element={<Ad_hoc_summary />} />
         <Route path="/" element={<App />} />
       </Routes>
     </Router>
