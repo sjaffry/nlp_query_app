@@ -26,6 +26,7 @@ const Ad_hoc_summary = ({ signOut, user }) => {
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [recommendations, setRecommendations] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [file, setFile] = useState(null);
@@ -35,6 +36,21 @@ const Ad_hoc_summary = ({ signOut, user }) => {
 
   useEffect(() => {}, []);
 
+
+  const splitLLMResult = (text) => {
+    const summaryMatch = text.match(/Summary:(.*?)(?=Top 5 recommendations:|$)/s);
+    const recommendationsMatch = text.match(/Top 5 recommendations:(.*)/s);  
+
+    // Extract the Summary and Recommendations sections
+    const summary = summaryMatch ? summaryMatch[1].trim() : "";
+    const recommendations = recommendationsMatch ? recommendationsMatch[1].trim() : "";
+
+    return {
+      "Summary": summary,
+      "Recommendations": recommendations
+    };
+
+  }  
 // Call LLM Summary API
   const GenerateSummary = async (fileName) => {
     setSummaryLoading(true);
@@ -52,8 +68,9 @@ const Ad_hoc_summary = ({ signOut, user }) => {
       }
     })
     .then(response => {
-      const llmText = response.data.replace(/\n/g, '');
-      setSummary(llmText);
+      const llmText = splitLLMResult(response.data);
+      setSummary(llmText.Summary);
+      setRecommendations(llmText.Recommendations);
       setErrorMsg(null);
       setSummaryLoading(false);
     })
@@ -180,9 +197,32 @@ const handleFileUpload = async (event) => {
             <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
               <Typography variant="h5" gutterBottom>Summary</Typography>
               {summaryLoading && <CircularProgress />}
-              <TextField multiline variant="outlined" rows={8} fullWidth value={summary ? JSON.stringify(summary, null, 2) : ''}/>
+              <TextField 
+                multiline variant="outlined" 
+                InputProps={{
+                  readOnly: true,
+                }}
+                rows={12} 
+                fullWidth 
+                value={summary ? summary : ''}
+                />
             </Paper>
-            <Paper sx={{ width: '42%', display: 'flex',flexDirection: 'column', justifyContent: 'space-between', p: 2, borderColor: 'black', border: 0.3 }}>
+            <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
+              <Typography variant="h5" gutterBottom>Top 5 recommendations</Typography>
+              {summaryLoading && <CircularProgress />}
+              <TextField 
+                multiline variant="outlined" 
+                InputProps={{
+                  readOnly: true,
+                }}
+                rows={12} 
+                fullWidth 
+                value={recommendations ? recommendations : ''}
+                />
+            </Paper>
+            </Box>
+          <Box sx={{ display: 'flex', mb: 6, justifyContent: 'space-between' }}>
+            <Paper sx={{ width: '50%', display: 'flex',flexDirection: 'column', justifyContent: 'space-between', p: 2, borderColor: 'black', border: 0.3 }}>
               <Typography variant="h5" gutterBottom>Q&A</Typography>
               <TextField 
                 multiline 
@@ -194,7 +234,7 @@ const handleFileUpload = async (event) => {
                 placeholder="Write your question here.." />
               <TextField multiline 
                 variant="outlined" 
-                rows={5} 
+                rows={7} 
                 value={response ? JSON.stringify(response, null, 2) : ''} 
                 placeholder="Answer.." />
               <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
