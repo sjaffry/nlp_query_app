@@ -180,6 +180,7 @@ const App = ({ signOut, user }) => {
                     const formattedDate = date.toDateString()
                     return (
                     <Button
+                        key={index}
                         variant="contained"
                         sx={{
                         width: '30%',

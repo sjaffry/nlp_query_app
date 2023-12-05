@@ -61,7 +61,7 @@ const Dashboard = ({
             multiline 
             variant="outlined" 
             rows={7} 
-            value={response ? JSON.stringify(response, null, 2) : ''} 
+            value={response ? response : ''} 
             placeholder="Answer.." />
           <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Button variant="outlined" sx={{ mr: 1, borderColor: 'black' }} onClick={handleSubmit}>Submit</Button>
