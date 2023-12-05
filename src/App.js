@@ -6,9 +6,9 @@ import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { List, ListItem, ListItemIcon, Box, Paper, TextField, Typography, Button, CircularProgress } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import { Link } from "react-router-dom";
+import Dashboard from './components/Dashboard';
+import Sidepanel from './components/Sidepanel';
 Amplify.configure(awsExports);
 
 
@@ -27,10 +27,12 @@ const App = ({ signOut, user }) => {
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [recommendations, setRecommendations] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
-  const [dashboardUrl, setDashboardUrl] = useState(null);
+  const [analyticsUrl, setanalyticsUrl] = useState(null);
+  const business_name = user.signInUserSession.idToken.payload['cognito:groups']
 
 
 // Call page load API
@@ -54,11 +56,26 @@ const App = ({ signOut, user }) => {
 
   }, []);
 
+  const splitLLMResult = (text) => {
+    const summaryMatch = text.match(/Summary:(.*?)(?=Top 5 recommendations:|$)/s);
+    const recommendationsMatch = text.match(/Top 5 recommendations:(.*)/s);  
+
+    // Extract the Summary and Recommendations sections
+    const summary = summaryMatch ? summaryMatch[1].trim() : "";
+    const recommendations = recommendationsMatch ? recommendationsMatch[1].trim() : "";
+
+    return {
+      "Summary": summary,
+      "Recommendations": recommendations
+    };
+
+  }  
 
 // Call LLM Summary API and get embedded QuickSight dashboard
   const handleTileClick = async (index, asAtDate) => {
     setSummaryLoading(true);
     setSummary(null);
+    setRecommendations(null);
     setSelectedTile(index);
     setReviewDate(asAtDate);
     const dateString = asAtDate.substring(0,4)+'/'+asAtDate.substring(4,6)+'/'+asAtDate.substring(6,8);
@@ -77,8 +94,9 @@ const App = ({ signOut, user }) => {
       }
     })
     .then(response => {
-      const htmlText = response.data.replace(/\n/g, '');
-      setSummary(htmlText);
+      const llmText = splitLLMResult(response.data);
+      setSummary(llmText.Summary);
+      setRecommendations(llmText.Recommendations);
       setErrorMsg(null);
       setSummaryLoading(false);
     })
@@ -100,7 +118,7 @@ const App = ({ signOut, user }) => {
     .then(response => {
       console.log('URL:'+response.data);
       const baseUrl = response.data;
-      setDashboardUrl(`${baseUrl}#p.dateFrom=${encodedDateFrom}&p.dateTo=${encodedDateTo}`);
+      setanalyticsUrl(`${baseUrl}#p.dateFrom=${encodedDateFrom}&p.dateTo=${encodedDateTo}`);
     })
     .catch(error => {
       console.error('Error fetching embedded dashboard url', error);
@@ -146,23 +164,9 @@ const App = ({ signOut, user }) => {
         <Button variant="contained" sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}} onClick={signOut}>
           Logout
         </Button>
-        <Box component={Paper} sx={{ width: '20%', p: 2, height: '100%', bgcolor: '#1d2636', color: 'white' }}>
-        <Typography variant="h4" gutterBottom color='#6366F1'>{user.signInUserSession.idToken.payload['cognito:groups']}</Typography>
-          <List>
-            <ListItem sx={{ mb: 2 }}>
-              <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
-              <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-                Weekly summary
-              </Link>
-            </ListItem>
-            <ListItem sx={{ mb: 2 }}>
-              <ListItemIcon><BarChartIcon sx={{ color: 'white' }}/></ListItemIcon>
-              <Link to="/Ad_hoc_summary" style={{ color: 'white', textDecoration: 'none' }}>
-                Ad-hoc summary
-              </Link>
-            </ListItem>
-          </List>
-        </Box>
+        <Sidepanel
+          business_name={business_name}
+        />
         <Box sx={{ width: '80%', p: 2, overflow: 'auto' }}>
           <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.signInUserSession.idToken.payload.given_name}</Typography>
           {errorMsg && (
@@ -194,38 +198,21 @@ const App = ({ signOut, user }) => {
                 })}
           </Box>
           )}
-          <Box sx={{ display: 'flex', mb: 6, justifyContent: 'space-between' }}>
-            <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
-              <Typography variant="h5" gutterBottom>Summary</Typography>
-              {summaryLoading && <CircularProgress />}
-              <TextField multiline variant="outlined" rows={8} fullWidth value={summary ? JSON.stringify(summary, null, 2) : ''}/>
-            </Paper>
-            <Paper sx={{ width: '42%', display: 'flex',flexDirection: 'column', justifyContent: 'space-between', p: 2, borderColor: 'black', border: 0.3 }}>
-              <Typography variant="h5" gutterBottom>Q&A</Typography>
-              <TextField 
-                multiline 
-                variant="outlined" 
-                rows={3} 
-                sx={{ mb: 2 }} 
-                value={query} 
-                onChange={(e) => setQuery(e.target.value)} 
-                placeholder="Write your question here.." />
-              <TextField multiline 
-                variant="outlined" 
-                rows={5} 
-                value={response ? JSON.stringify(response, null, 2) : ''} 
-                placeholder="Answer.." />
-              <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <Button variant="outlined" sx={{ mr: 1, borderColor: 'black' }} onClick={handleSubmit}>Submit</Button>
-                <Button variant="outlined" sx={{ borderColor: 'black' }} onClick={() => { setQuery(''); setResponse(null); }}>Clear</Button>
-              </Box>
-              {submitLoading && <CircularProgress />}
-            </Paper>
-          </Box>
-          {dashboardUrl && (
+          <Dashboard
+            summaryLoading={summaryLoading}
+            summary={summary}
+            recommendations={recommendations}
+            query={query}
+            setQuery={setQuery}
+            setResponse={setResponse}
+            response={response}
+            handleSubmit={handleSubmit}
+            submitLoading={submitLoading}
+          />
+          {analyticsUrl && (
           <Box sx={{ width: '100%', height: '500px' }}>
             <iframe
-              src= {dashboardUrl}
+              src= {analyticsUrl}
               width="100%"
               height="100%"
               title="Embedded Content"

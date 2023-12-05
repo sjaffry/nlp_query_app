@@ -6,9 +6,9 @@ import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { List, ListItem, ListItemIcon, Box, Paper, TextField, Typography, Button, CircularProgress } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import { Link } from "react-router-dom";
+import Dashboard from './components/Dashboard';
+import Sidepanel from './components/Sidepanel';
 Amplify.configure(awsExports);
 
 
@@ -55,6 +55,7 @@ const Ad_hoc_summary = ({ signOut, user }) => {
   const GenerateSummary = async (fileName) => {
     setSummaryLoading(true);
     setSummary(null);
+    setRecommendations(null);
 
     // Call LLM Summary API
     const url1 = 'https://nvo134vi7a.execute-api.us-east-1.amazonaws.com/Prod';
@@ -154,23 +155,9 @@ const handleFileUpload = async (event) => {
         <Button variant="contained" sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}} onClick={signOut}>
           Logout
         </Button>
-        <Box component={Paper} sx={{ width: '20%', p: 2, height: '100%', bgcolor: '#1d2636', color: 'white' }}>
-        <Typography variant="h4" gutterBottom color='#6366F1'>{business_name}</Typography>
-          <List>
-            <ListItem sx={{ mb: 2 }}>
-              <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
-              <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-                Weekly summaries
-              </Link>
-            </ListItem>
-            <ListItem sx={{ mb: 2 }}>
-              <ListItemIcon><BarChartIcon sx={{ color: 'white' }}/></ListItemIcon>
-              <Link to="/itemized_analytics" style={{ color: 'white', textDecoration: 'none' }}>
-                Ad-hoc summary
-              </Link>
-            </ListItem>
-          </List>
-        </Box>
+        <Sidepanel
+          business_name={business_name}
+        />
         <Box sx={{ width: '80%', p: 2, overflow: 'auto' }}>
           <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.signInUserSession.idToken.payload.given_name}</Typography>
           {errorMsg && (
@@ -193,57 +180,17 @@ const handleFileUpload = async (event) => {
               {showSpinner && <CircularProgress />}
               {showFilename && <Typography variant="subtitle1">{file.name}</Typography>}
           </Box>
-          <Box sx={{ display: 'flex', mb: 6, justifyContent: 'space-between' }}>
-            <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
-              <Typography variant="h5" gutterBottom>Summary</Typography>
-              {summaryLoading && <CircularProgress />}
-              <TextField 
-                multiline variant="outlined" 
-                InputProps={{
-                  readOnly: true,
-                }}
-                rows={12} 
-                fullWidth 
-                value={summary ? summary : ''}
-                />
-            </Paper>
-            <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
-              <Typography variant="h5" gutterBottom>Top 5 recommendations</Typography>
-              {summaryLoading && <CircularProgress />}
-              <TextField 
-                multiline variant="outlined" 
-                InputProps={{
-                  readOnly: true,
-                }}
-                rows={12} 
-                fullWidth 
-                value={recommendations ? recommendations : ''}
-                />
-            </Paper>
-            </Box>
-          <Box sx={{ display: 'flex', mb: 6, justifyContent: 'space-between' }}>
-            <Paper sx={{ width: '50%', display: 'flex',flexDirection: 'column', justifyContent: 'space-between', p: 2, borderColor: 'black', border: 0.3 }}>
-              <Typography variant="h5" gutterBottom>Q&A</Typography>
-              <TextField 
-                multiline 
-                variant="outlined" 
-                rows={3} 
-                sx={{ mb: 2 }} 
-                value={query} 
-                onChange={(e) => setQuery(e.target.value)} 
-                placeholder="Write your question here.." />
-              <TextField multiline 
-                variant="outlined" 
-                rows={7} 
-                value={response ? JSON.stringify(response, null, 2) : ''} 
-                placeholder="Answer.." />
-              <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <Button variant="outlined" sx={{ mr: 1, borderColor: 'black' }} onClick={handleSubmit}>Submit</Button>
-                <Button variant="outlined" sx={{ borderColor: 'black' }} onClick={() => { setQuery(''); setResponse(null); }}>Clear</Button>
-              </Box>
-              {submitLoading && <CircularProgress />}
-            </Paper>
-          </Box>
+          <Dashboard
+            summaryLoading={summaryLoading}
+            summary={summary}
+            recommendations={recommendations}
+            query={query}
+            setQuery={setQuery}
+            setResponse={setResponse}
+            response={response}
+            handleSubmit={handleSubmit}
+            submitLoading={submitLoading}
+          />
         </Box>
       </Box>
     </ThemeProvider>
