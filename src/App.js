@@ -38,7 +38,7 @@ const App = ({ signOut, user }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const res = await axios.get('https://zsvveeu663.execute-api.us-east-1.amazonaws.com/Prod', {
+        const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
             headers: {
               Authorization: user.signInUserSession.idToken.jwtToken
             },
@@ -83,7 +83,7 @@ const App = ({ signOut, user }) => {
     const encodedDateTo = encodeURIComponent(dateString);
 
     // Call LLM Summary API
-    const url1 = 'https://hn341rhbql.execute-api.us-east-1.amazonaws.com/prod';
+    const url1 = 'https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod';
 
     axios.get(url1, {
       params: {
@@ -108,7 +108,7 @@ const App = ({ signOut, user }) => {
 
 
     // Call Get Embedded Dashboard API
-    const url2 = 'https://3mxx6rl744.execute-api.us-east-1.amazonaws.com/prod';
+    const url2 = 'https://dh9lkmru1d.execute-api.us-east-1.amazonaws.com/prod';
 
     axios.get(url2, {
       headers: {
@@ -138,7 +138,7 @@ const App = ({ signOut, user }) => {
       setResponse(null);
   
       try {
-        const response = await axios.get('https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod', {
+        const response = await axios.get('https://293d8oapa8.execute-api.us-east-1.amazonaws.com/prod', {
             params: {
               date_range: reviewDate,
               query: query
