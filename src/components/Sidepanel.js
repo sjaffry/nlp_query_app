@@ -15,7 +15,7 @@ const Sidepanel = ({
             <ListItem sx={{ mb: 2 }}>
             <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-                Weekly summaries
+                Monthly summaries
             </Link>
             </ListItem>
             <ListItem sx={{ mb: 2 }}>
