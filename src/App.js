@@ -106,23 +106,6 @@ const App = ({ signOut, user }) => {
       setSummary(null);
     });
 
-
-    // Call Get Embedded Dashboard API
-    const url2 = 'https://dh9lkmru1d.execute-api.us-east-1.amazonaws.com/prod';
-
-    axios.get(url2, {
-      headers: {
-        Authorization: user.signInUserSession.idToken.jwtToken
-      }
-    })
-    .then(response => {
-      console.log('URL:'+response.data);
-      const baseUrl = response.data;
-      setanalyticsUrl(`${baseUrl}#p.dateFrom=${encodedDateFrom}&p.dateTo=${encodedDateTo}`);
-    })
-    .catch(error => {
-      console.error('Error fetching embedded dashboard url', error);
-    });
   }
 
 // Call LLM Q&A API
@@ -210,16 +193,6 @@ const App = ({ signOut, user }) => {
             handleSubmit={handleSubmit}
             submitLoading={submitLoading}
           />
-          {analyticsUrl && (
-          <Box sx={{ width: '100%', height: '500px' }}>
-            <iframe
-              src= {analyticsUrl}
-              width="100%"
-              height="100%"
-              title="Embedded Content"
-            ></iframe>
-          </Box>
-          )}
         </Box>
       </Box>
     </ThemeProvider>
