@@ -8,6 +8,7 @@ amplify/backend/.temp
 build/
 dist/
 node_modules/
+scratch
 awsconfiguration.json
 amplifyconfiguration.json
 amplifyconfiguration.dart

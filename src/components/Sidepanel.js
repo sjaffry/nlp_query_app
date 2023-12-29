@@ -15,13 +15,19 @@ const Sidepanel = ({
             <ListItem sx={{ mb: 2 }}>
             <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-                Monthly summaries
+                Periodic
+            </Link>
+            </ListItem>
+            <ListItem sx={{ mb: 2 }}>
+            <ListItemIcon><BarChartIcon sx={{ color: 'white' }}/></ListItemIcon>
+            <Link to="/Events_summary" style={{ color: 'white', textDecoration: 'none' }}>
+                Events
             </Link>
             </ListItem>
             <ListItem sx={{ mb: 2 }}>
             <ListItemIcon><BarChartIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/Ad_hoc_summary" style={{ color: 'white', textDecoration: 'none' }}>
-                Ad-hoc summary
+                Ad-hoc
             </Link>
             </ListItem>
         </List>

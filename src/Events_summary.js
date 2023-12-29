@@ -20,7 +20,7 @@ const theme = createTheme({
   },
 });
 
-const App = ({ signOut, user }) => {
+const Events_summary = ({ signOut, user }) => {
   const [selectedTile, setSelectedTile] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [reviewDate, setReviewDate] = useState('');
@@ -38,7 +38,7 @@ const App = ({ signOut, user }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
+        const res = await axios.get('https://zsvveeu663.execute-api.us-east-1.amazonaws.com/Prod', {
             headers: {
               Authorization: user.signInUserSession.idToken.jwtToken
             },
@@ -155,7 +155,7 @@ const App = ({ signOut, user }) => {
           {errorMsg && (
           <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
-          <Typography variant="h5" gutterBottom>Analyze monthly reviews</Typography>
+          <Typography variant="h5" gutterBottom>Analyze event reviews</Typography>
           {externalData && (
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
             {externalData["Subfolders"].map((subfolder, index) => {
@@ -166,7 +166,7 @@ const App = ({ signOut, user }) => {
                 const isValidDate = (date) => !isNaN(date.getTime());
 
                 // Check if the date is valid before rendering the button
-                if (isValidDate(date)) {
+                if (!isValidDate(date)) {
                     return (
                         <Button
                             key={index}
@@ -182,7 +182,7 @@ const App = ({ signOut, user }) => {
                             }}
                             onClick={() => handleTileClick(index, subfolder)}
                         >
-                            {formattedDate}
+                            {subfolder}
                         </Button>
                     );
                 } else {
@@ -209,5 +209,5 @@ const App = ({ signOut, user }) => {
   );
 }
 
-export default withAuthenticator(App);
+export default withAuthenticator(Events_summary);
 
