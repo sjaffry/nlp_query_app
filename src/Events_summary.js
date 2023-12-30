@@ -31,7 +31,7 @@ const Events_summary = ({ signOut, user }) => {
   const [errorMsg, setErrorMsg] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
-  const [analyticsUrl, setanalyticsUrl] = useState(null);
+  const [dateFolders, setDateFolders] = useState(null);
   const business_name = user.signInUserSession.idToken.payload['cognito:groups']
 
 // Call page load API
@@ -71,16 +71,36 @@ const Events_summary = ({ signOut, user }) => {
 
   }  
 
-// Call LLM Summary API and get embedded QuickSight dashboard
-  const handleTileClick = async (index, asAtDate) => {
+// Retrieve the date based sub-folders under the event folders
+const handleTileClick1 = async (index, eventName) => {
+  setSelectedTile(index);
+  setSummary(null);
+  setRecommendations(null);
+
+  try {
+    const res = await axios.get('https://s61mcvavp7.execute-api.us-east-1.amazonaws.com/Prod', {
+      params: {
+        event_name: eventName
+      },  
+      headers: {
+          Authorization: user.signInUserSession.idToken.jwtToken
+        },
+      });
+    setDateFolders(res.data);
+    setErrorMsg(null);
+  } catch (error) {
+    console.error('Error:', error);
+    setErrorMsg(error.message);
+  }
+}
+
+// Call LLM Summary API
+  const handleTileClick2 = async (index, asAtDate) => {
     setSummaryLoading(true);
     setSummary(null);
     setRecommendations(null);
     setSelectedTile(index);
     setReviewDate(asAtDate);
-    const dateString = asAtDate.substring(0,4)+'/'+asAtDate.substring(4,6)+'/'+asAtDate.substring(6,8);
-    const encodedDateFrom = encodeURIComponent(dateString);
-    const encodedDateTo = encodeURIComponent(dateString);
 
     // Call LLM Summary API
     const url1 = 'https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod';
@@ -105,7 +125,6 @@ const Events_summary = ({ signOut, user }) => {
       setErrorMsg(error.message);
       setSummary(null);
     });
-
   }
 
 // Call LLM Q&A API
@@ -160,7 +179,6 @@ const Events_summary = ({ signOut, user }) => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
             {externalData["Subfolders"].map((subfolder, index) => {
                 const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1, subfolder.substring(6, 8));
-                const formattedDate = date.toDateString();
 
                 // Function to check if the date is valid
                 const isValidDate = (date) => !isNaN(date.getTime());
@@ -180,9 +198,44 @@ const Events_summary = ({ signOut, user }) => {
                                     backgroundColor: selectedTile === index ? '#1d2636' : 'white',
                                 },
                             }}
-                            onClick={() => handleTileClick(index, subfolder)}
+                            onClick={() => handleTileClick1(index, subfolder)}
                         >
                             {subfolder}
+                        </Button>
+                    );
+                } else {
+                    // Return null or another component if the date is invalid
+                    return null;
+                }
+            })}
+          </Box>
+          )}
+          {dateFolders && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
+            {dateFolders["Subfolders"].map((subfolder, index) => {
+                const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1, subfolder.substring(6, 8));
+                const formattedDate = date.toDateString();
+                // Function to check if the date is valid
+                const isValidDate = (date) => !isNaN(date.getTime());
+
+                // Check if the date is valid before rendering the button
+                if (isValidDate(date)) {
+                    return (
+                        <Button
+                            key={index}
+                            variant="contained"
+                            sx={{
+                                width: '30%',
+                                p: 2,
+                                backgroundColor: selectedTile === index ? '#1d2636' : 'white',
+                                color: selectedTile === index ? 'white' : '#1d2636',
+                                '&:hover': {
+                                    backgroundColor: selectedTile === index ? '#1d2636' : 'white',
+                                },
+                            }}
+                            onClick={() => handleTileClick2(index, subfolder)}
+                        >
+                            {formattedDate}
                         </Button>
                     );
                 } else {

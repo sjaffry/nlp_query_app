@@ -21,13 +21,13 @@ def decode_jwt(token):
     signature = decode_base64_url(parts[2])
 
     return json.loads(payload)
-    #return { 'business_name': payload['cognito:groups'][0] }
     
 def trimmed_foldername(full_folderpath):
     return os.path.basename(os.path.normpath(full_folderpath))
     
 
 def list_subfolders(bucket_name, prefix):
+
     s3 = boto3.client('s3')
     response = s3.list_objects_v2(Bucket=bucket_name, Delimiter='/', Prefix=prefix)
     subfolders = []
@@ -47,12 +47,14 @@ def lambda_handler(event, context):
     decoded = decode_jwt(token)
     # We only ever expect the user to be in one group only - business rule
     business_name = decoded['cognito:groups'][0]
+    event_name = event["queryStringParameters"]['event_name']
     
     # Now we list all the subfolders for the business name
-    prefix = f'transcribe-output/{business_name}/'
+    prefix = f'transcribe-output/{business_name}/{event_name}/'
     subfolders = list_subfolders(bucket_name, prefix)
     result = {
         "Business name": business_name,
+        "Event name": event_name,
         "Subfolders": subfolders
         }
         
