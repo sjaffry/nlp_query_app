@@ -32,6 +32,7 @@ const Events_summary = ({ signOut, user }) => {
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
   const [dateFolders, setDateFolders] = useState(null);
+  const [eventName, setEventName] = useState(null);
   const business_name = user.signInUserSession.idToken.payload['cognito:groups']
 
 // Call page load API
@@ -76,6 +77,7 @@ const handleTileClick1 = async (index, eventName) => {
   setSelectedTile(index);
   setSummary(null);
   setRecommendations(null);
+  setEventName(eventName);
 
   try {
     const res = await axios.get('https://s61mcvavp7.execute-api.us-east-1.amazonaws.com/Prod', {
@@ -95,37 +97,38 @@ const handleTileClick1 = async (index, eventName) => {
 }
 
 // Call LLM Summary API
-  const handleTileClick2 = async (index, asAtDate) => {
-    setSummaryLoading(true);
+const handleTileClick2 = async (index, asAtDate) => {
+  setSummaryLoading(true);
+  setSummary(null);
+  setRecommendations(null);
+  setSelectedTile(index);
+  setReviewDate(asAtDate);
+
+  // Call LLM Summary API
+  const url1 = 'https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod';
+
+  axios.get(url1, {
+    params: {
+      date_range: asAtDate,
+      event_name: eventName
+    },
+    headers: {
+      Authorization: user.signInUserSession.idToken.jwtToken
+    }
+  })
+  .then(response => {
+    const llmText = splitLLMResult(response.data);
+    setSummary(llmText.Summary);
+    setRecommendations(llmText.Recommendations);
+    setErrorMsg(null);
+    setSummaryLoading(false);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    setErrorMsg(error.message);
     setSummary(null);
-    setRecommendations(null);
-    setSelectedTile(index);
-    setReviewDate(asAtDate);
-
-    // Call LLM Summary API
-    const url1 = 'https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod';
-
-    axios.get(url1, {
-      params: {
-        date_range: asAtDate
-      },
-      headers: {
-        Authorization: user.signInUserSession.idToken.jwtToken
-      }
-    })
-    .then(response => {
-      const llmText = splitLLMResult(response.data);
-      setSummary(llmText.Summary);
-      setRecommendations(llmText.Recommendations);
-      setErrorMsg(null);
-      setSummaryLoading(false);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      setErrorMsg(error.message);
-      setSummary(null);
-    });
-  }
+  });
+}
 
 // Call LLM Q&A API
   const handleSubmit = async (event) => {

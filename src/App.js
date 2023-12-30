@@ -87,7 +87,8 @@ const App = ({ signOut, user }) => {
 
     axios.get(url1, {
       params: {
-        date_range: asAtDate
+        date_range: asAtDate,
+        event_name: ''
       },
       headers: {
         Authorization: user.signInUserSession.idToken.jwtToken
