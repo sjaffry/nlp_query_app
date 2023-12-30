@@ -156,7 +156,7 @@ const App = ({ signOut, user }) => {
           {errorMsg && (
           <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
-          <Typography variant="h5" gutterBottom>Analyze monthly reviews</Typography>
+          <Typography variant="h5" gutterBottom>Analyze periodic reviews</Typography>
           {externalData && (
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
             {externalData["Subfolders"].map((subfolder, index) => {
