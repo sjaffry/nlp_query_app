@@ -216,8 +216,9 @@ const handleTileClick2 = async (index, asAtDate) => {
           {dateFolders && (
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
             {dateFolders["Subfolders"].map((subfolder, index) => {
-                const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1, subfolder.substring(6, 8));
-                const formattedDate = date.toDateString();
+                const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1);
+                const options = { year: 'numeric', month: 'short' };
+                const formattedDate = date.toLocaleDateString(undefined, options);
                 // Function to check if the date is valid
                 const isValidDate = (date) => !isNaN(date.getTime());
 
