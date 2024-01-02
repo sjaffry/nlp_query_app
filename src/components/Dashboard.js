@@ -2,17 +2,15 @@ import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { Box, Button, Typography, Paper, List, ListItem, ListItemIcon, TextField, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
+import handleDownloadClick from './ReviewDownload';
 
 const Dashboard = ({
   summaryLoading,
   summary,
   recommendations,
-  query,
-  setQuery,
-  setResponse,
-  response,
-  handleSubmit,
-  submitLoading,
+  reviewDate,
+  jwtToken,
+  eventName
 }) => {
   return (
     <Box>    
@@ -45,6 +43,19 @@ const Dashboard = ({
             value={recommendations ? recommendations : ''}
           />
         </Paper>
+      </Box>
+      <Box sx={{ display: 'flex', mb: 6 }}>
+        <Button 
+          variant="contained" 
+          disabled={summary == null}
+          onClick= {() => handleDownloadClick(jwtToken, reviewDate, eventName)}
+          sx={
+            {width: '30%', p: 2, 
+            color: summary ? 'white' : '#1d2636', 
+            backgroundColor: summary ? '#1d2636' : 'white',
+            }}> 
+            Download original responses
+        </Button>
       </Box>
     </Box>
   );

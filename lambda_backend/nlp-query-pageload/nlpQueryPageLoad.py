@@ -41,6 +41,7 @@ def list_subfolders(bucket_name, prefix):
 
 def lambda_handler(event, context):
     bucket_name = os.environ['bucket_name']
+    get_events = event["queryStringParameters"]['get_events']
     
     # Let's extract the business name from the token by looking at the group memebership of the user
     token = event['headers']['Authorization']
@@ -49,7 +50,11 @@ def lambda_handler(event, context):
     business_name = decoded['cognito:groups'][0]
     
     # Now we list all the subfolders for the business name
-    prefix = f'transcribe-output/{business_name}/'
+    if get_events == "True":
+        prefix = f'transcribe-output/{business_name}/events/'
+    else:
+        prefix = f'transcribe-output/{business_name}/'
+    
     subfolders = list_subfolders(bucket_name, prefix)
     result = {
         "Business name": business_name,

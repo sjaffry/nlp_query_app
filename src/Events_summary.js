@@ -22,6 +22,7 @@ const theme = createTheme({
 
 const Events_summary = ({ signOut, user }) => {
   const [selectedTile, setSelectedTile] = useState(null);
+  const [selectedTile2, setSelectedTile2] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [reviewDate, setReviewDate] = useState('');
   const [query, setQuery] = useState('');
@@ -34,16 +35,20 @@ const Events_summary = ({ signOut, user }) => {
   const [dateFolders, setDateFolders] = useState(null);
   const [eventName, setEventName] = useState(null);
   const business_name = user.signInUserSession.idToken.payload['cognito:groups']
+  const jwtToken = user.signInUserSession.idToken.jwtToken;
 
 // Call page load API
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
-            headers: {
-              Authorization: user.signInUserSession.idToken.jwtToken
-            },
-          });
+          params: {
+            get_events: 'True'
+          },           
+          headers: {
+            Authorization: jwtToken
+          },
+        });
         setExternalData(res.data);
         setErrorMsg(null);
       } catch (error) {
@@ -85,7 +90,7 @@ const handleTileClick1 = async (index, eventName) => {
         event_name: eventName
       },  
       headers: {
-          Authorization: user.signInUserSession.idToken.jwtToken
+          Authorization: jwtToken
         },
       });
     setDateFolders(res.data);
@@ -113,7 +118,7 @@ const handleTileClick2 = async (index, asAtDate) => {
       event_name: eventName
     },
     headers: {
-      Authorization: user.signInUserSession.idToken.jwtToken
+      Authorization: jwtToken
     }
   })
   .then(response => {
@@ -179,7 +184,7 @@ const handleTileClick2 = async (index, asAtDate) => {
           )}
           <Typography variant="h5" gutterBottom>Analyze event reviews</Typography>
           {externalData && (
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
+          <Box sx={{ display: 'flex', mb: 6 }}>
             {externalData["Subfolders"].map((subfolder, index) => {
                 const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1, subfolder.substring(6, 8));
 
@@ -214,7 +219,7 @@ const handleTileClick2 = async (index, asAtDate) => {
           </Box>
           )}
           {dateFolders && (
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
+          <Box sx={{ display: 'flex', mb: 6 }}>
             {dateFolders["Subfolders"].map((subfolder, index) => {
                 const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1);
                 const options = { year: 'numeric', month: 'short' };
@@ -231,10 +236,10 @@ const handleTileClick2 = async (index, asAtDate) => {
                             sx={{
                                 width: '30%',
                                 p: 2,
-                                backgroundColor: selectedTile === index ? '#1d2636' : 'white',
-                                color: selectedTile === index ? 'white' : '#1d2636',
+                                backgroundColor: selectedTile2 === index ? '#1d2636' : 'white',
+                                color: selectedTile2 === index ? 'white' : '#1d2636',
                                 '&:hover': {
-                                    backgroundColor: selectedTile === index ? '#1d2636' : 'white',
+                                    backgroundColor: selectedTile2 === index ? '#1d2636' : 'white',
                                 },
                             }}
                             onClick={() => handleTileClick2(index, subfolder)}
@@ -253,12 +258,9 @@ const handleTileClick2 = async (index, asAtDate) => {
             summaryLoading={summaryLoading}
             summary={summary}
             recommendations={recommendations}
-            query={query}
-            setQuery={setQuery}
-            setResponse={setResponse}
-            response={response}
-            handleSubmit={handleSubmit}
-            submitLoading={submitLoading}
+            reviewDate={reviewDate}
+            jwtToken={jwtToken}
+            eventName={eventName}
           />
         </Box>
       </Box>

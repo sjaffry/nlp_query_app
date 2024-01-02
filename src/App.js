@@ -32,17 +32,21 @@ const App = ({ signOut, user }) => {
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
   const [analyticsUrl, setanalyticsUrl] = useState(null);
-  const business_name = user.signInUserSession.idToken.payload['cognito:groups']
+  const business_name = user.signInUserSession.idToken.payload['cognito:groups'];
+  const jwtToken = user.signInUserSession.idToken.jwtToken;
 
 // Call page load API
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const res = await axios.get('https://pdqcm4sps2.execute-api.us-east-1.amazonaws.com/Prod', {
-            headers: {
-              Authorization: user.signInUserSession.idToken.jwtToken
-            },
-          });
+          params: {
+            get_events: 'False'
+          },           
+          headers: {
+            Authorization: jwtToken
+          },
+        });
         setExternalData(res.data);
         setErrorMsg(null);
       } catch (error) {
@@ -91,7 +95,7 @@ const App = ({ signOut, user }) => {
         event_name: ''
       },
       headers: {
-        Authorization: user.signInUserSession.idToken.jwtToken
+        Authorization: jwtToken
       }
     })
     .then(response => {
@@ -197,12 +201,9 @@ const App = ({ signOut, user }) => {
             summaryLoading={summaryLoading}
             summary={summary}
             recommendations={recommendations}
-            query={query}
-            setQuery={setQuery}
-            setResponse={setResponse}
-            response={response}
-            handleSubmit={handleSubmit}
-            submitLoading={submitLoading}
+            reviewDate={reviewDate}
+            jwtToken={jwtToken}
+            eventName=''
           />
         </Box>
       </Box>

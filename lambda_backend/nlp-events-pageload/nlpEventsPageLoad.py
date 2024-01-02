@@ -50,7 +50,7 @@ def lambda_handler(event, context):
     event_name = event["queryStringParameters"]['event_name']
     
     # Now we list all the subfolders for the business name
-    prefix = f'transcribe-output/{business_name}/{event_name}/'
+    prefix = f'transcribe-output/{business_name}/events/{event_name}/'
     subfolders = list_subfolders(bucket_name, prefix)
     result = {
         "Business name": business_name,
