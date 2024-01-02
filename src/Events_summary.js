@@ -102,38 +102,38 @@ const handleTileClick1 = async (index, eventName) => {
 }
 
 // Call LLM Summary API
-const handleTileClick2 = async (index, asAtDate) => {
-  setSummaryLoading(true);
-  setSummary(null);
-  setRecommendations(null);
-  setSelectedTile(index);
-  setReviewDate(asAtDate);
-
-  // Call LLM Summary API
-  const url1 = 'https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod';
-
-  axios.get(url1, {
-    params: {
-      date_range: asAtDate,
-      event_name: eventName
-    },
-    headers: {
-      Authorization: jwtToken
-    }
-  })
-  .then(response => {
-    const llmText = splitLLMResult(response.data);
-    setSummary(llmText.Summary);
-    setRecommendations(llmText.Recommendations);
-    setErrorMsg(null);
-    setSummaryLoading(false);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    setErrorMsg(error.message);
+  const handleTileClick2 = async (index, asAtDate) => {
+    setSummaryLoading(true);
     setSummary(null);
-  });
-}
+    setRecommendations(null);
+    setSelectedTile2(index);
+    setReviewDate(asAtDate);
+
+    // Call LLM Summary API
+    const url1 = 'https://zmgz9j814l.execute-api.us-east-1.amazonaws.com/prod';
+
+    axios.get(url1, {
+      params: {
+        date_range: asAtDate,
+        event_name: eventName
+      },
+      headers: {
+        Authorization: jwtToken
+      }
+    })
+    .then(response => {
+      const llmText = splitLLMResult(response.data);
+      setSummary(llmText.Summary);
+      setRecommendations(llmText.Recommendations);
+      setErrorMsg(null);
+      setSummaryLoading(false);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      setErrorMsg(error.message);
+      setSummary(null);
+    });
+  }
 
 // Call LLM Q&A API
   const handleSubmit = async (event) => {
@@ -154,7 +154,7 @@ const handleTileClick2 = async (index, asAtDate) => {
               query: query
             },
             headers: {
-              Authorization: user.signInUserSession.idToken.jwtToken
+              Authorization: jwtToken
             },
           });
           setResponse(response.data);
