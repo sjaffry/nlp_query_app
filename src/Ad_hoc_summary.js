@@ -184,12 +184,9 @@ const handleFileUpload = async (event) => {
             summaryLoading={summaryLoading}
             summary={summary}
             recommendations={recommendations}
-            query={query}
-            setQuery={setQuery}
-            setResponse={setResponse}
-            response={response}
-            handleSubmit={handleSubmit}
-            submitLoading={submitLoading}
+            reviewDate={reviewDate}
+            jwtToken=''
+            eventName=''
           />
         </Box>
       </Box>

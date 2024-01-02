@@ -47,7 +47,7 @@ const Dashboard = ({
       <Box sx={{ display: 'flex', mb: 6 }}>
         <Button 
           variant="contained" 
-          disabled={summary == null}
+          disabled={summary == null || jwtToken == ''}
           onClick= {() => handleDownloadClick(jwtToken, reviewDate, eventName)}
           sx={
             {width: '30%', p: 2, 
