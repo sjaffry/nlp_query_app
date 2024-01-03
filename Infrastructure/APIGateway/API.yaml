@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: My API Gateway and Lambda function
+
+Parameters:
+  apiGatewayName:
+    Type: String
+    Default: my-api-2
+  apiGatewayStageName:
+    Type: String
+    Default: Prod
+  apiGatewayHTTPMethod:
+    Type: String
+    Default: GET
+  lambdaFunctionName:
+    Type: String
+    Default: replace
+  IAMRole:
+    Type: String
+    Default: arn:aws:iam::303830944942:role/power_execution
+  lambdaFunctionArn:
+    Type: String
+    Default: arn:aws:lambda:us-west-1:303830944942:function
+
+Resources:
+  apiGateway:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Description: NLP Query App API
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Name: !Ref apiGatewayName
+  CogAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      Name: CognitoAuthorizer
+      RestApiId: !Ref apiGateway
+      Type: COGNITO_USER_POOLS
+      IdentitySource: method.request.header.Authorization
+      ProviderARNs:
+        - arn:aws:cognito-idp:us-west-1:303830944942:userpool/us-west-1_eRX9xW5RM
+  apiGatewayRootMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: !Ref apiGatewayHTTPMethod
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref CogAuthorizer
+      Integration:
+        IntegrationHttpMethod: GET
+        Type: AWS_PROXY
+        Credentials: !Ref IAMRole
+        Uri: !Sub
+          - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations
+          - lambdaArn: !Ref lambdaFunctionArn
+      ResourceId: !GetAtt apiGateway.RootResourceId
+      RestApiId: !Ref apiGateway
+
+  apiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - apiGatewayRootMethod
+    Properties:
+      RestApiId: !Ref apiGateway
+      StageName: !Ref apiGatewayStageName
+
+Outputs:
+  apiGatewayInvokeURL:
+    Value: !Sub https://${apiGateway}.execute-api.${AWS::Region}.amazonaws.com/${apiGatewayStageName}
+
+  lambdaArn:
+    Value: !Ref lambdaFunctionArn
