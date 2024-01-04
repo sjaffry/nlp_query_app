@@ -21,10 +21,10 @@ const Dashboard = ({
     var reviewsFileName = 'original-reviews-';
 
     if (eventName == '') {
-       file_prefix += reviewDate+'/combinedreviews.csv';
+       file_prefix += reviewDate+'/combinedreviews.txt';
        reviewsFileName += reviewDate+'.csv'
      } else {
-       file_prefix += 'events/'+eventName+'/'+reviewDate+'/combinedreviews.csv';
+       file_prefix += 'events/'+eventName+'/'+reviewDate+'/combinedreviews.txt';
        reviewsFileName += eventName+'-'+reviewDate+'.csv'
      }
 
