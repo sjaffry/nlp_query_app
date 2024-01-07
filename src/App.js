@@ -109,6 +109,7 @@ const App = ({ signOut, user }) => {
       console.error('Error:', error);
       setErrorMsg(error.message);
       setSummary(null);
+      alert(errorMsg+' Try again');
     });
 
   }
@@ -165,7 +166,8 @@ const App = ({ signOut, user }) => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
             {externalData["Subfolders"].map((subfolder, index) => {
                 const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1, subfolder.substring(6, 8));
-                const formattedDate = date.toDateString();
+                const options = { year: 'numeric', month: 'short' };
+                const formattedDate = date.toLocaleDateString(undefined, options);                
 
                 // Function to check if the date is valid
                 const isValidDate = (date) => !isNaN(date.getTime());
