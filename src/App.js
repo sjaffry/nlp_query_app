@@ -31,7 +31,7 @@ const App = ({ signOut, user }) => {
   const [errorMsg, setErrorMsg] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
-  const [analyticsUrl, setanalyticsUrl] = useState(null);
+  const [reviewCount, setReviewCount] = useState(null);
   const business_name = user.signInUserSession.idToken.payload['cognito:groups'];
   const jwtToken = user.signInUserSession.idToken.jwtToken;
 
@@ -99,7 +99,9 @@ const App = ({ signOut, user }) => {
       }
     })
     .then(response => {
-      const llmText = splitLLMResult(response.data);
+      const llmResponse = response.data;
+      const llmText = splitLLMResult(llmResponse.llm_text);
+      setReviewCount(llmResponse.review_count);
       setSummary(llmText.Summary);
       setRecommendations(llmText.Recommendations);
       setErrorMsg(null);
@@ -206,6 +208,7 @@ const App = ({ signOut, user }) => {
             reviewDate={reviewDate}
             jwtToken={jwtToken}
             eventName=''
+            reviewCount={reviewCount}
           />
         </Box>
       </Box>

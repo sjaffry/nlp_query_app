@@ -34,6 +34,7 @@ const Events_summary = ({ signOut, user }) => {
   const [externalData, setExternalData] = useState(null);
   const [dateFolders, setDateFolders] = useState(null);
   const [eventName, setEventName] = useState(null);
+  const [reviewCount, setReviewCount] = useState(null);
   const business_name = user.signInUserSession.idToken.payload['cognito:groups']
   const jwtToken = user.signInUserSession.idToken.jwtToken;
 
@@ -122,7 +123,9 @@ const handleTileClick1 = async (index, eventName) => {
       }
     })
     .then(response => {
-      const llmText = splitLLMResult(response.data);
+      const llmResponse = response.data;
+      const llmText = splitLLMResult(llmResponse.llm_text);
+      setReviewCount(llmResponse.review_count);
       setSummary(llmText.Summary);
       setRecommendations(llmText.Recommendations);
       setErrorMsg(null);
@@ -260,7 +263,7 @@ const handleTileClick1 = async (index, eventName) => {
             recommendations={recommendations}
             reviewDate={reviewDate}
             jwtToken={jwtToken}
-            eventName={eventName}
+            reviewCount={reviewCount}
           />
         </Box>
       </Box>

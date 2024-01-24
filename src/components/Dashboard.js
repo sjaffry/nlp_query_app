@@ -9,7 +9,8 @@ const Dashboard = ({
   recommendations,
   reviewDate,
   jwtToken,
-  eventName
+  eventName,
+  reviewCount
 }) => {
 
   const [isDownloading, setIsDownloading] = useState(false);
@@ -68,7 +69,7 @@ const Dashboard = ({
     <Box>    
       <Box sx={{ display: 'flex', mb: 6, justifyContent: 'space-between' }}>
         <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
-          <Typography variant="h5" gutterBottom>Summary</Typography>
+          <Typography variant="h5" gutterBottom>Summary of {reviewCount} reviews</Typography>
           {summaryLoading && <CircularProgress />}
           <TextField 
             multiline
