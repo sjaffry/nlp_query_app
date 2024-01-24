@@ -263,6 +263,7 @@ const handleTileClick1 = async (index, eventName) => {
             recommendations={recommendations}
             reviewDate={reviewDate}
             jwtToken={jwtToken}
+            eventName={eventName}
             reviewCount={reviewCount}
           />
         </Box>
