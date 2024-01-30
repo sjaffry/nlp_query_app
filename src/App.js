@@ -39,7 +39,7 @@ const App = ({ signOut, user }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const res = await axios.get('https://6qfz03qwl6.execute-api.us-east-1.amazonaws.com/Prod', {
+        const res = await axios.get('https://6qfz03qwl6.execute-api.us-west-2.amazonaws.com/Prod', {
           params: {
             get_events: 'False'
           },           
@@ -87,7 +87,7 @@ const App = ({ signOut, user }) => {
     const encodedDateTo = encodeURIComponent(dateString);
 
     // Call LLM Summary API
-    const url1 = 'https://e4tj1o23ni.execute-api.us-east-1.amazonaws.com/prod';
+    const url1 = 'https://e4tj1o23ni.execute-api.us-west-2.amazonaws.com/prod';
 
     axios.get(url1, {
       params: {
@@ -129,7 +129,7 @@ const App = ({ signOut, user }) => {
       setResponse(null);
   
       try {
-        const response = await axios.get('https://dlazrlpykd.execute-api.us-east-1.amazonaws.com/prod', {
+        const response = await axios.get('https://dlazrlpykd.execute-api.us-west-2.amazonaws.com/prod', {
             params: {
               date_range: reviewDate,
               query: query
