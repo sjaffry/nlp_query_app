@@ -21,7 +21,7 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'headers': {
                 "Access-Control-Allow-Headers" : "Content-Type",
-                "Access-Control-Allow-Origin": "https://query.shoutavouch.com",
+                "Access-Control-Allow-Origin": "https://query.onreaction.com",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
         },  
             'body': file_content.decode('utf-8')
@@ -32,7 +32,7 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'headers': {
                 "Access-Control-Allow-Headers" : "Content-Type",
-                "Access-Control-Allow-Origin": "https://query.shoutavouch.com",
+                "Access-Control-Allow-Origin": "https://query.onreaction.com",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
         },
             'body': json.dumps({'error': str(e)})

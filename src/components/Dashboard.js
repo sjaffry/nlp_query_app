@@ -29,7 +29,7 @@ const Dashboard = ({
        reviewsFileName += eventName+'-'+reviewDate+'.csv'
      }
 
-    fetch('https://ctxzkwvz2a.execute-api.us-east-1.amazonaws.com/Prod/?file_prefix='+file_prefix, {
+    fetch('https://9yniafed42.execute-api.us-east-1.amazonaws.com/Prod/?file_prefix='+file_prefix, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
