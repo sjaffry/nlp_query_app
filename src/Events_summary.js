@@ -42,7 +42,7 @@ const Events_summary = ({ signOut, user }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const res = await axios.get('https://6qfz03qwl6.execute-api.us-west-2.amazonaws.com/Prod', {
+        const res = await axios.get('https://xd65osve7l.execute-api.us-west-2.amazonaws.com/Prod', {
           params: {
             get_events: 'True'
           },           
@@ -86,7 +86,7 @@ const handleTileClick1 = async (index, eventName) => {
   setEventName(eventName);
 
   try {
-    const res = await axios.get('https://k6iq6hyspf.execute-api.us-west-2.amazonaws.com/Prod', {
+    const res = await axios.get('https://u1z1f2m7z4.execute-api.us-west-2.amazonaws.com/Prod', {
       params: {
         event_name: eventName
       },  
