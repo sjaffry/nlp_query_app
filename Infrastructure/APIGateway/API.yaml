@@ -38,7 +38,7 @@ Resources:
       Type: COGNITO_USER_POOLS
       IdentitySource: method.request.header.Authorization
       ProviderARNs:
-        - arn:aws:cognito-idp:us-west-1:303830944942:userpool/us-west-1_eRX9xW5RM
+        - arn:aws:cognito-idp:us-west-2:303830944942:userpool/us-west-2_W2pBiCMgs
   apiGatewayRootMethod:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -46,7 +46,7 @@ Resources:
       AuthorizationType: COGNITO_USER_POOLS
       AuthorizerId: !Ref CogAuthorizer
       Integration:
-        IntegrationHttpMethod: GET
+        IntegrationHttpMethod: POST
         Type: AWS_PROXY
         Credentials: !Ref IAMRole
         Uri: !Sub

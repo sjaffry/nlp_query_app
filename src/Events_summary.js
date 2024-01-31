@@ -111,7 +111,7 @@ const handleTileClick1 = async (index, eventName) => {
     setReviewDate(asAtDate);
 
     // Call LLM Summary API
-    const url1 = 'https://e4tj1o23ni.execute-api.us-west-2.amazonaws.com/prod';
+    const url1 = 'https://foy4lujjik.execute-api.us-west-2.amazonaws.com/prod';
 
     axios.get(url1, {
       params: {
@@ -151,7 +151,7 @@ const handleTileClick1 = async (index, eventName) => {
       setResponse(null);
   
       try {
-        const response = await axios.get('https://dlazrlpykd.execute-api.us-west-2.amazonaws.com/prod', {
+        const response = await axios.get('https://yyea5arxea.execute-api.us-west-2.amazonaws.com/prod', {
             params: {
               date_range: reviewDate,
               query: query
