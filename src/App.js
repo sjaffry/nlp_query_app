@@ -87,7 +87,7 @@ const App = ({ signOut, user }) => {
     const encodedDateTo = encodeURIComponent(dateString);
 
     // Call LLM Summary API
-    const url1 = 'https://foy4lujjik.execute-api.us-west-2.amazonaws.com/prod';
+    const url1 = 'https://foy4lujjik.execute-api.us-west-2.amazonaws.com/Prod';
 
     axios.get(url1, {
       params: {
@@ -129,7 +129,7 @@ const App = ({ signOut, user }) => {
       setResponse(null);
   
       try {
-        const response = await axios.get('https://yyea5arxea.execute-api.us-west-2.amazonaws.com/prod', {
+        const response = await axios.get('https://yyea5arxea.execute-api.us-west-2.amazonaws.com/Prod', {
             params: {
               date_range: reviewDate,
               query: query
