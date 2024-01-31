@@ -58,7 +58,7 @@ const Ad_hoc_summary = ({ signOut, user }) => {
     setRecommendations(null);
 
     // Call LLM Summary API
-    const url1 = 'https://nvo134vi7a.execute-api.us-east-1.amazonaws.com/Prod';
+    const url1 = 'https://gcgvfmgyl7.execute-api.us-west-2.amazonaws.com/Prod';
 
     axios.get(url1, {
       params: {
@@ -89,7 +89,7 @@ const handleFileUpload = async (event) => {
   const fileType = file.type;
   const fileName = file.name;
   //PROD URL
-  const url = "https://t8q9viy6bb.execute-api.us-east-1.amazonaws.com/Prod?"
+  const url = "https://gq1wvizjv4.execute-api.us-west-2.amazonaws.com/Prod?"
   const signUrl = url.concat("business_name="+business_name+"&file_name="+fileName+"&upload_dir=document");
   axios.get(signUrl)
   .then(response => {
@@ -129,7 +129,7 @@ const handleFileUpload = async (event) => {
       setResponse(null);
   
       try {
-        const response = await axios.get('https://1tf94b2vo8.execute-api.us-east-1.amazonaws.com/prod', {
+        const response = await axios.get('https://yyea5arxea.execute-api.us-west-2.amazonaws.com/prod', {
             params: {
               date_range: reviewDate,
               query: query
