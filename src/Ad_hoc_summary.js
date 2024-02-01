@@ -97,7 +97,6 @@ const handleFileUpload = async (event) => {
     var options = {
       headers: {
         'Content-Type': fileType,
-        Authorization: user.signInUserSession.idToken.jwtToken
       }
     };
     setShowSpinner(true);
