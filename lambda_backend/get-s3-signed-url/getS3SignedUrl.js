@@ -19,7 +19,7 @@ const getUploadURL = async function(business_name, upload_dir, file_name) {
 
   // Get signed URL from S3
   const s3Params = {
-    Bucket: process.env.UploadBucket,
+    Bucket: process.env.bucket_name,
     Key,
     Expires: URL_EXPIRATION_SECONDS,
     ContentType: 'application/octet-stream'
