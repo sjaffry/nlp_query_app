@@ -91,7 +91,12 @@ const handleFileUpload = async (event) => {
   //PROD URL
   const url = "https://gq1wvizjv4.execute-api.us-west-2.amazonaws.com/Prod?"
   const signUrl = url.concat("business_name="+business_name+"&file_name="+fileName+"&upload_dir=document");
-  axios.get(signUrl)
+  const presign_api_options = {
+    headers: {
+      Authorization: user.signInUserSession.idToken.jwtToken
+    }
+  }
+  axios.get(signUrl, presign_api_options)
   .then(response => {
     var signedRequest = response.data.uploadURL;
     var options = {
