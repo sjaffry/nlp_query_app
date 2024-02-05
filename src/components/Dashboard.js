@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { Box, Button, Typography, Paper, List, ListItem, ListItemIcon, TextField, CircularProgress } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, Button, Typography, Paper, TextField, CircularProgress, Grid, useMediaQuery, useTheme } from '@mui/material';
+
 
 const Dashboard = ({
   summaryLoading,
@@ -14,6 +14,8 @@ const Dashboard = ({
 }) => {
 
   const [isDownloading, setIsDownloading] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleDownloadClick = async (jwtToken, reviewDate, eventName) => {
     
@@ -66,48 +68,54 @@ const Dashboard = ({
         });
   } 
   return (
-    <Box>    
-      <Box sx={{ display: 'flex', mb: 6, justifyContent: 'space-between' }}>
-        <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
-          <Typography variant="h5" gutterBottom>Summary of {reviewCount} reviews</Typography>
-          {summaryLoading && <CircularProgress />}
-          <TextField 
-            multiline
-            variant="outlined" 
-            InputProps={{
-              readOnly: true,
-            }}
-            rows={12} 
-            fullWidth 
-            value={summary ? summary : ''}
-          />
-        </Paper>
-        <Paper sx={{ width: '50%', p: 2, borderColor: 'black', border: 0.3, mr: 3 }}>
-          <Typography variant="h5" gutterBottom>Top 5 recommendations</Typography>
-          {summaryLoading && <CircularProgress />}
-          <TextField 
-            multiline
-            variant="outlined" 
-            InputProps={{
-              readOnly: true,
-            }}
-            rows={12} 
-            fullWidth 
-            value={recommendations ? recommendations : ''}
-          />
-        </Paper>
-      </Box>
-      <Box sx={{ display: 'flex', mb: 6 }}>
+    <Box>
+      <Grid container spacing={isMobile ? 1 : 3} mb={6}>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2, borderColor: 'black', border: 0.3 }}>
+            <Typography variant="h5" gutterBottom>Summary of {reviewCount} reviews</Typography>
+            {summaryLoading && <CircularProgress />}
+            <TextField 
+              multiline
+              variant="outlined" 
+              InputProps={{
+                readOnly: true,
+              }}
+              rows={isMobile ? 5 : 12} 
+              fullWidth 
+              value={summary || ''}
+            />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2, borderColor: 'black', border: 0.3 }}>
+            <Typography variant="h5" gutterBottom>Top 5 recommendations</Typography>
+            {summaryLoading && <CircularProgress />}
+            <TextField 
+              multiline
+              variant="outlined" 
+              InputProps={{
+                readOnly: true,
+              }}
+              rows={isMobile ? 5 : 12} 
+              fullWidth 
+              value={recommendations || ''}
+            />
+          </Paper>
+        </Grid>
+      </Grid>
+      <Box sx={{ display: 'flex', mb: 6, justifyContent: 'center' }}>
         <Button 
           variant="contained" 
-          disabled={summary == null || jwtToken == '' || isDownloading}
-          onClick= {() => handleDownloadClick(jwtToken, reviewDate, eventName)}
-          sx={
-            {width: '30%', p: 2, 
+          disabled={!summary || !jwtToken || isDownloading}
+          onClick={() => handleDownloadClick(jwtToken, reviewDate, eventName)}
+          sx={{
+            width: isMobile ? '100%' : '30%', 
+            p: 2,
             color: summary ? 'white' : '#1d2636', 
             backgroundColor: summary ? '#1d2636' : 'white',
-            }}> 
-            Download original responses
+          }}
+        >
+          Download original responses
         </Button>
         {isDownloading && <CircularProgress />}
       </Box>

@@ -5,7 +5,7 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { List, ListItem, ListItemIcon, Box, Paper, TextField, Typography, Button, CircularProgress } from '@mui/material';
+import { List, ListItem, ListItemIcon, Box, Paper, TextField, Typography, Button, CircularProgress, useMediaQuery, useTheme } from '@mui/material';
 import { Link } from "react-router-dom";
 import Dashboard from './components/Dashboard';
 import Sidepanel from './components/Sidepanel';
@@ -32,10 +32,16 @@ const Ad_hoc_summary = ({ signOut, user }) => {
   const [file, setFile] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showFilename, setShowFilename] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const business_name = user.signInUserSession.idToken.payload['cognito:groups']
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); 
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };  
+  
   useEffect(() => {}, []);
-
 
   const splitLLMResult = (text) => {
     const summaryMatch = text.match(/Summary:(.*?)(?=Top 5 recommendations:|$)/s);
@@ -157,12 +163,15 @@ const handleFileUpload = async (event) => {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex', bgcolor: 'white', height: '100vh' }}>
-        <Button variant="contained" sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}} onClick={signOut}>
-          Logout
-        </Button>
-        <Sidepanel
-          business_name={business_name}
-        />
+        {!isMobile && (
+          <Button variant="contained" sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}} onClick={signOut}>
+            Logout
+          </Button>
+        )}
+        {isMobile && (
+          <Button sx={{ color: 'white', backgroundColor: '#1d2636'}} onClick={toggleSidebar}> Menu >> </Button>
+        )}
+        <Sidepanel isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} business_name={business_name} />
         <Box sx={{ width: '80%', p: 2, overflow: 'auto' }}>
           <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.signInUserSession.idToken.payload.given_name}</Typography>
           {errorMsg && (
@@ -173,7 +182,7 @@ const handleFileUpload = async (event) => {
             <Button
               variant="contained"
               component="label"
-              sx={{ width: '30%', p: 2, mr: 2 }}
+              sx={{ width: isMobile ? '50%' : '30%', p: 2, mr: 2, color: 'white', backgroundColor: '#1d2636' }}
             >
               Upload File
               <input
