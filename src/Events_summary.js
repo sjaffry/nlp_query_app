@@ -211,7 +211,8 @@ const handleTileClick1 = async (index, eventName) => {
                             key={index}
                             variant="contained"
                             sx={{
-                                width: '30%',
+                                minWidth: '30%',
+                                width: 'max-content',
                                 p: 2,
                                 backgroundColor: selectedTile === index ? '#1d2636' : 'white',
                                 color: selectedTile === index ? 'white' : '#1d2636',

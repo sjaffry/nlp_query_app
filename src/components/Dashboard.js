@@ -73,7 +73,7 @@ const Dashboard = ({
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2, borderColor: 'black', border: 0.3 }}>
             <Typography variant="h5" gutterBottom>Summary of {reviewCount} reviews</Typography>
-            {summaryLoading && <CircularProgress />}
+            {summaryLoading && <CircularProgress color="inherit"/>}
             <TextField 
               multiline
               variant="outlined" 
@@ -89,7 +89,7 @@ const Dashboard = ({
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2, borderColor: 'black', border: 0.3 }}>
             <Typography variant="h5" gutterBottom>Top 5 recommendations</Typography>
-            {summaryLoading && <CircularProgress />}
+            {summaryLoading && <CircularProgress color="inherit"/>}
             <TextField 
               multiline
               variant="outlined" 
@@ -117,7 +117,7 @@ const Dashboard = ({
         >
           Download original responses
         </Button>
-        {isDownloading && <CircularProgress />}
+        {isDownloading && <CircularProgress color="inherit"/>}
       </Box>
     </Box>
   );

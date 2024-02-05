@@ -182,7 +182,13 @@ const handleFileUpload = async (event) => {
             <Button
               variant="contained"
               component="label"
-              sx={{ width: isMobile ? '50%' : '30%', p: 2, mr: 2, color: 'white', backgroundColor: '#1d2636' }}
+              sx={{ width: isMobile ? '50%' : '30%', 
+                  p: 2, mr: 2, 
+                  color: 'white', 
+                  backgroundColor: '#1d2636',
+                  '&:hover': {
+                    backgroundColor: '#1d2636',
+                }}}
             >
               Upload File
               <input
@@ -191,7 +197,7 @@ const handleFileUpload = async (event) => {
                 onChange={handleFileUpload}
               />
             </Button>
-              {showSpinner && <CircularProgress />}
+              {showSpinner && <CircularProgress color="inherit"/>}
               {showFilename && <Typography variant="subtitle1">{file.name}</Typography>}
           </Box>
           <Dashboard
