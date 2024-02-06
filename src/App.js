@@ -160,7 +160,15 @@ const App = ({ signOut, user }) => {
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex', bgcolor: 'white', height: '100vh' }}>
         {!isMobile && (
-          <Button variant="contained" sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}} onClick={signOut}>
+          <Button variant="contained" 
+            sx={{ 
+              position: 'absolute', 
+              top: 2, 
+              right: 2, 
+              backgroundColor: '#1d2636',
+              '&:hover': {
+                backgroundColor: '#1d2636',
+            }}} onClick={signOut}>
             Logout
           </Button>
         )}

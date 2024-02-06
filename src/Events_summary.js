@@ -275,6 +275,7 @@ const handleTileClick1 = async (index, eventName) => {
             reviewDate={reviewDate}
             jwtToken={jwtToken}
             eventName={eventName}
+            reviewCount={reviewCount}
           />
         </Box>
       </Box>
