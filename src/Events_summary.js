@@ -204,8 +204,8 @@ const handleTileClick1 = async (index, eventName) => {
                 // Function to check if the date is valid
                 const isValidDate = (date) => !isNaN(date.getTime());
 
-                // Check if the date is valid before rendering the button
-                if (!isValidDate(date)) {
+                // Here we are rendering the event names
+                if (!isValidDate(date) && date != 'vanilla') {
                     return (
                         <Button
                             key={index}
