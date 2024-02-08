@@ -205,7 +205,7 @@ const handleTileClick1 = async (index, eventName) => {
                 const isValidDate = (date) => !isNaN(date.getTime());
 
                 // Here we are rendering the event names
-                if (!isValidDate(date) && date != 'vanilla') {
+                if (!isValidDate(date) && subfolder != 'vanilla') {
                     return (
                         <Button
                             key={index}
