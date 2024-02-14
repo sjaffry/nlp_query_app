@@ -9,6 +9,7 @@ import { List, ListItem, ListItemIcon, Box, Paper, TextField, Typography, Button
 import { Link } from "react-router-dom";
 import Dashboard from './components/Dashboard';
 import Sidepanel from './components/Sidepanel';
+import { useNavigate } from "react-router-dom";
 Amplify.configure(awsExports);
 
 
@@ -40,6 +41,8 @@ const Events_summary = ({ signOut, user }) => {
   const jwtToken = user.signInUserSession.idToken.jwtToken;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm')); 
+  const createEventPage = `/Create_event`;
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -178,13 +181,30 @@ const handleTileClick1 = async (index, eventName) => {
       setSubmitLoading(false);
   };
 
+  const createEvent = async (event) => {
+    navigate(createEventPage);
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex', bgcolor: 'white', height: '100vh' }}>
         {!isMobile && (
-          <Button variant="contained" sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}} onClick={signOut}>
-            Logout
-          </Button>
+          <>
+            <Button
+              variant="contained"
+              sx={{ position: 'absolute', top: 2, right: 102, backgroundColor: '#1d2636'}}
+              onClick={createEvent}
+            >
+              New event
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}}
+              onClick={signOut}
+            >
+              Logout
+            </Button>
+          </>
         )}
         {isMobile && (
           <Button sx={{ color: 'white', backgroundColor: '#1d2636'}} onClick={toggleSidebar}> Menu >> </Button>

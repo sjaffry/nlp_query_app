@@ -12,6 +12,7 @@ App-test.js
 App-prod.js
 Events_summary-Test.js
 Events_summary-Prod.js
+Create_event-Test.js
 
 # production
 /build
