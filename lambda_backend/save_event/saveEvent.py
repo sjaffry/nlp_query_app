@@ -127,7 +127,7 @@ def lambda_handler(event, context):
         'headers': {
             "Access-Control-Allow-Headers" : "Content-Type",
             "Access-Control-Allow-Origin": "https://query.onreaction.com",
-            "Access-Control-Allow-Methods": "OPTIONS,PUT,POST,GET,DELETE"
+            "Access-Control-Allow-Methods": "OPTIONS,PUT,POST,GET"
     },    
-        'body': json.dumps(url)
+        'body': json.dumps(response["Attributes"])
     } 
