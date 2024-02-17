@@ -32,6 +32,7 @@ const Events_summary = ({ signOut, user }) => {
   const [recommendations, setRecommendations] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
   const [externalData, setExternalData] = useState(null);
   const [dateFolders, setDateFolders] = useState(null);
   const [eventName, setEventName] = useState(null);
@@ -68,7 +69,9 @@ const Events_summary = ({ signOut, user }) => {
       }
     };
 
+    setPageLoading(true);
     fetchInitialData();
+    setPageLoading(false);
 
   }, []);
 
@@ -94,6 +97,7 @@ const handleTileClick1 = async (index, eventName) => {
   setSummary(null);
   setRecommendations(null);
   setEventName(eventName);
+  setPageLoading(true);
 
   try {
     const res = await axios.get('https://u1z1f2m7z4.execute-api.us-west-2.amazonaws.com/Prod', {
@@ -106,6 +110,7 @@ const handleTileClick1 = async (index, eventName) => {
       });
     setDateFolders(res.data);
     setErrorMsg(null);
+    setPageLoading(false);
   } catch (error) {
     console.error('Error:', error);
     setErrorMsg(error.message);
@@ -218,6 +223,7 @@ const handleTileClick1 = async (index, eventName) => {
           <Typography variant="h5" gutterBottom>Analyze event reviews</Typography>
           {externalData && (
           <Box sx={{ display: 'flex', mb: 6 }}>
+            {pageLoading && <CircularProgress color="inherit"/>}
             {externalData["Subfolders"].map((subfolder, index) => {
                 const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1, subfolder.substring(6, 8));
 
@@ -253,7 +259,7 @@ const handleTileClick1 = async (index, eventName) => {
           </Box>
           )}
           {dateFolders && (
-          <Box sx={{ display: 'flex', mb: 6 }}>
+          <Box sx={{ display: 'flex', mb: 6 }}> 
             {dateFolders["Subfolders"].map((subfolder, index) => {
                 const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1);
                 const options = { year: 'numeric', month: 'short' };
