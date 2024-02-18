@@ -21,6 +21,7 @@ import {
   Checkbox,
   useMediaQuery, 
   useTheme,
+  CircularProgress,
   IconButton,
   Paper } from '@mui/material';
 import Sidepanel from './components/Sidepanel';
@@ -39,6 +40,7 @@ const Create_event = ({ signOut, user }) => {
   const [newEventName, setNewEventName] = useState('');  
   const [events, setEvents] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [pageLoading, setPageLoading] = useState(false);
   
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -50,6 +52,7 @@ const Create_event = ({ signOut, user }) => {
 
    //  Populate event list by getting events from the database
   useEffect(() => {
+    setPageLoading(true);
     const fetchEvents = async () => {
       try {
         const res = await axios.get('https://ozzxo9l5r1.execute-api.us-west-2.amazonaws.com/Prod', {         
@@ -61,6 +64,7 @@ const Create_event = ({ signOut, user }) => {
         setSelectedEvent(activeEvent);
         setEvents(res.data);
         setErrorMsg(null);
+        setPageLoading(false);
       } catch (error) {
         console.error('Error:', error);
         setErrorMsg(error.message);
@@ -188,8 +192,8 @@ return (
       <Box sx={{ width: '80%', p: 2, overflow: 'auto' }}>
         <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.signInUserSession.idToken.payload.given_name}</Typography>
         <Typography sx={{ mb: 5 }} variant="h5" gutterBottom>Create or Update Event</Typography>
-        {/* Input for new event name */}
         <Box sx={{ mb: 2, display: 'flex', gap: 2, width: '50%' }}>
+          {pageLoading && <CircularProgress color="inherit"/>}
           <TextField
             label="New Event Name"
             variant="outlined"
