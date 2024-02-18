@@ -33,7 +33,6 @@ const Create_event = ({ signOut, user }) => {
   const business_name = user.signInUserSession.idToken.payload['cognito:groups']
   const jwtToken = user.signInUserSession.idToken.jwtToken;
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); 
   const eventSummaryPage = `/Events_summary`;
   const navigate = useNavigate();
   const [selectedEvent, setSelectedEvent] = useState('');
@@ -167,27 +166,20 @@ const handleCopyUrl = async (friendly_name) => {
 return (
   <ThemeProvider theme={theme}>
     <Box sx={{ display: 'flex', bgcolor: 'white', height: '100vh' }}>
-      {!isMobile && (
-        <>
-          <Button
-            variant="contained"
-            sx={{ position: 'absolute', top: 2, right: 102, backgroundColor: '#1d2636'}}
-            onClick={eventSummary}
-          >
-            Back to Events
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}}
-            onClick={signOut}
-          >
-            Logout
-          </Button>
-        </>
-      )}
-      {isMobile && (
-        <Button sx={{ color: 'white', backgroundColor: '#1d2636'}} onClick={toggleSidebar}> Menu >> </Button>
-      )}
+      <Button
+        variant="contained"
+        sx={{ position: 'absolute', top: 2, right: 102, backgroundColor: '#1d2636'}}
+        onClick={eventSummary}
+      >
+        Back to Events
+      </Button>
+      <Button
+        variant="contained"
+        sx={{ position: 'absolute', top: 2, right: 2, backgroundColor: '#1d2636'}}
+        onClick={signOut}
+      >
+        Logout
+      </Button>
       <Sidepanel isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} business_name={business_name} />
       <Box sx={{ width: '80%', p: 2, overflow: 'auto' }}>
         <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.signInUserSession.idToken.payload.given_name}</Typography>
