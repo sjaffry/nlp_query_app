@@ -66,6 +66,7 @@ const Events_summary = ({ signOut, user }) => {
       } catch (error) {
         console.error('Error:', error);
         setErrorMsg(error.message);
+        alert('Session expired! Please refresh the page and try again.');
       }
     };
 
@@ -114,6 +115,7 @@ const handleTileClick1 = async (index, eventName) => {
   } catch (error) {
     console.error('Error:', error);
     setErrorMsg(error.message);
+    alert('Session expired! Please refresh the page and try again.');
   }
 }
 
@@ -150,6 +152,7 @@ const handleTileClick1 = async (index, eventName) => {
       console.error('Error:', error);
       setErrorMsg(error.message);
       setSummary(null);
+      alert('Session expired! Please refresh the page and try again.');
     });
   }
 
@@ -181,6 +184,7 @@ const handleTileClick1 = async (index, eventName) => {
         console.error('Error:', error);
         setErrorMsg(error.message);
         setResponse(null);
+        alert('Session expired! Please refresh the page and try again.');
       }
 
       setSubmitLoading(false);

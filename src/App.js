@@ -59,6 +59,7 @@ const App = ({ signOut, user }) => {
       } catch (error) {
         console.error('Error:', error);
         setErrorMsg(error.message);
+        alert('Session expired! Please refresh the page and try again.');
       }
     };
 
@@ -118,7 +119,7 @@ const App = ({ signOut, user }) => {
       console.error('Error:', error);
       setErrorMsg(error.message);
       setSummary(null);
-      alert(errorMsg+' Try again');
+      alert('Session expired! Please refresh the page and try again.');
     });
 
   }
@@ -151,6 +152,7 @@ const App = ({ signOut, user }) => {
         console.error('Error:', error);
         setErrorMsg(error.message);
         setResponse(null);
+        alert('Session expired! Please refresh the page and try again.');
       }
 
       setSubmitLoading(false);
