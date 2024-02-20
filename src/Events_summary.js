@@ -32,7 +32,7 @@ const Events_summary = ({ signOut, user }) => {
   const [recommendations, setRecommendations] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
-  const [pageLoading, setPageLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const [externalData, setExternalData] = useState(null);
   const [dateFolders, setDateFolders] = useState(null);
   const [eventName, setEventName] = useState(null);
@@ -63,6 +63,7 @@ const Events_summary = ({ signOut, user }) => {
         });
         setExternalData(res.data);
         setErrorMsg(null);
+        setPageLoading(false);
       } catch (error) {
         console.error('Error:', error);
         setErrorMsg(error.message);
@@ -70,9 +71,7 @@ const Events_summary = ({ signOut, user }) => {
       }
     };
 
-    setPageLoading(true);
     fetchInitialData();
-    setPageLoading(false);
 
   }, []);
 
@@ -225,6 +224,7 @@ const handleTileClick1 = async (index, eventName) => {
           <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
           <Typography variant="h5" gutterBottom>Analyze event reviews</Typography>
+          {pageLoading && <CircularProgress color="inherit"/>}
           {externalData && (
           <Box sx={{ display: 'flex', mb: 6 }}>
             {pageLoading && <CircularProgress color="inherit"/>}

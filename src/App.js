@@ -30,6 +30,7 @@ const App = ({ signOut, user }) => {
   const [recommendations, setRecommendations] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const [externalData, setExternalData] = useState(null);
   const [reviewCount, setReviewCount] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -56,6 +57,7 @@ const App = ({ signOut, user }) => {
         });
         setExternalData(res.data);
         setErrorMsg(null);
+        setPageLoading(false);
       } catch (error) {
         console.error('Error:', error);
         setErrorMsg(error.message);
@@ -184,6 +186,7 @@ const App = ({ signOut, user }) => {
           <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
           <Typography variant="h5" gutterBottom>Analyze periodic reviews</Typography>
+          {pageLoading && <CircularProgress color="inherit"/>}
           {externalData && (
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
             {externalData["Subfolders"].map((subfolder, index) => {
