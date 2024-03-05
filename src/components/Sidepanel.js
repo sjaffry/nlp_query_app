@@ -45,7 +45,7 @@ const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
           <ListItem sx={{ mb: 2 }}>
             <ListItemIcon><AssignmentIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/Ad_hoc_summary" style={{ color: 'white', textDecoration: 'none' }}>
-              Ad-hoc
+              Ad-hoc report
             </Link>
           </ListItem>
         </List>
