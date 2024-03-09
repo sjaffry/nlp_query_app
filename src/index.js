@@ -5,6 +5,7 @@ import App from './App';
 import Ad_hoc_summary from './Ad_hoc_summary';
 import Events_summary from './Events_summary';
 import Create_event from './Create_event';
+import Conversational_qna from './Conversational_qna';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -16,6 +17,7 @@ root.render(
         <Route path="/Ad_hoc_summary" element={<Ad_hoc_summary />} />
         <Route path="/Events_summary" element={<Events_summary />} />
         <Route path="/Create_event" element={<Create_event />} />
+        <Route path="/Conversational_qna" element={<Conversational_qna />} />
         <Route path="/" element={<App />} />
       </Routes>
     </Router>

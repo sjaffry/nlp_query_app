@@ -48,6 +48,12 @@ const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
               Ad-hoc
             </Link>
           </ListItem>
+          <ListItem sx={{ mb: 2 }}>
+            <ListItemIcon><AssignmentIcon sx={{ color: 'white' }}/></ListItemIcon>
+            <Link to="/Conversational_qna" style={{ color: 'white', textDecoration: 'none' }}>
+              Chat with AI
+            </Link>
+          </ListItem>
         </List>
       </div>
       <div>
