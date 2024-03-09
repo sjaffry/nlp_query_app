@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import ChatIcon from '@mui/icons-material/Chat';
 import PulseLogo from '../images/PulseLogo.png';
 
 const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
@@ -49,7 +50,7 @@ const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
             </Link>
           </ListItem>
           <ListItem sx={{ mb: 2 }}>
-            <ListItemIcon><AssignmentIcon sx={{ color: 'white' }}/></ListItemIcon>
+            <ListItemIcon><ChatIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/Conversational_qna" style={{ color: 'white', textDecoration: 'none' }}>
               Chat with AI
             </Link>

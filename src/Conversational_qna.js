@@ -21,6 +21,7 @@ const theme = createTheme({
 const Conversational_qna = ({ signOut, user }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [query, setQuery] = useState('');
+  const [submittedQuery, setSubmittedQuery] = useState('');
   const [response, setResponse] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -38,9 +39,10 @@ const Conversational_qna = ({ signOut, user }) => {
 // Call LLM Q&A API
   const handleSubmit = async (event) => {
       event.preventDefault();
-
       setSubmitLoading(true);
       setResponse(null);
+      setSources(null);
+      setSubmittedQuery(query);
 
       try {
         const response = await axios.get('https://yyea5arxea.execute-api.us-west-2.amazonaws.com/Prod', {
@@ -82,20 +84,27 @@ const Conversational_qna = ({ signOut, user }) => {
             <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
           <Typography variant="h5" gutterBottom>Ask questions against all data</Typography>
-          <Box sx={{ mb: 3 }}>
-            <TextField
-              label="Enter a specific question about any event or any survey"
-              variant="outlined"
-              rows={isMobile ? 2 : 3} 
-              fullWidth
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              sx={{ mb: 1 }}
-            />
-            <Button sx={{ color: 'white', backgroundColor: '#1d2636'}} variant="contained" onClick={handleSubmit}>Submit</Button>
-          </Box>
+            <Box sx={{ mb: 3 }}>
+              <form onSubmit={(e) => {
+                handleSubmit(e);
+                setQuery('');
+              }}>
+                <TextField
+                  label="Enter a specific question about any event or any survey"
+                  variant="outlined"
+                  rows={isMobile ? 2 : 3} 
+                  fullWidth
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  sx={{ mb: 1 }}
+                />
+                <Button type="submit" sx={{ color: 'white', backgroundColor: '#1d2636'}} variant="contained">Submit</Button>
+              </form>
+            </Box>
             {submitLoading && <CircularProgress color="inherit"/>}
+            <Typography variant="h6">{submittedQuery}</Typography>
             <TextField 
+              sx={{ mb: 2}}
               multiline
               variant="outlined" 
               InputProps={{
