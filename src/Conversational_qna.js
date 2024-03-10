@@ -78,7 +78,7 @@ const Conversational_qna = ({ signOut, user }) => {
           <Button sx={{ color: 'white', backgroundColor: '#1d2636'}} onClick={toggleSidebar}> Menu >> </Button>
         )}
         <Sidepanel isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} business_name={business_name} />
-        <Box sx={{ width: '50%', p: 2, overflow: 'auto' }}>
+        <Box sx={{ width: isMobile ? '80%' : '50%', p: 2, overflow: 'auto' }}>
           <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.signInUserSession.idToken.payload.given_name}</Typography>
           {errorMsg && (
             <p style={{ color: 'red' }}>{errorMsg}</p>
