@@ -110,7 +110,7 @@ const Conversational_qna = ({ signOut, user }) => {
               InputProps={{
                 readOnly: true,
               }}
-              rows={isMobile ? 5 : 12} 
+              rows={isMobile ? 10 : 12} 
               fullWidth 
               value={response || ''}
             />
