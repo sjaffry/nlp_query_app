@@ -155,40 +155,6 @@ const handleTileClick1 = async (index, eventName) => {
     });
   }
 
-// Call LLM Q&A API
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    // Form validation
-    if (!query.trim() || !reviewDate) {
-        alert('Select a week and enter a question before submitting.');
-        return;
-      }
-      setSubmitLoading(true);
-      setResponse(null);
-  
-      try {
-        const response = await axios.get('https://yyea5arxea.execute-api.us-west-2.amazonaws.com/Prod', {
-            params: {
-              date_range: reviewDate,
-              query: query
-            },
-            headers: {
-              Authorization: jwtToken
-            },
-          });
-          setResponse(response.data);
-          setErrorMsg(null);
-      } catch (error) {
-        console.error('Error:', error);
-        setErrorMsg(error.message);
-        setResponse(null);
-        alert('Session expired! Please refresh the page and try again.');
-      }
-
-      setSubmitLoading(false);
-  };
-
   const createEvent = async (event) => {
     navigate(createEventPage);
   }
@@ -226,41 +192,38 @@ const handleTileClick1 = async (index, eventName) => {
           <Typography variant="h5" gutterBottom>Analyze event reviews</Typography>
           {pageLoading && <CircularProgress color="inherit"/>}
           {externalData && (
-          <Box sx={{ display: 'flex', mb: 6 }}>
-            {pageLoading && <CircularProgress color="inherit"/>}
-            {externalData["Subfolders"].map((subfolder, index) => {
-                const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1, subfolder.substring(6, 8));
-
-                // Function to check if the date is valid
-                const isValidDate = (date) => !isNaN(date.getTime());
-
-                // Here we are rendering the event names
-                if (!isValidDate(date) && subfolder != 'vanilla') {
-                    return (
-                        <Button
-                            key={index}
-                            variant="contained"
-                            sx={{
-                                minWidth: '30%',
-                                width: 'max-content',
-                                p: 2,
-                                backgroundColor: selectedTile === index ? '#1d2636' : 'white',
-                                color: selectedTile === index ? 'white' : '#1d2636',
-                                '&:hover': {
-                                    backgroundColor: selectedTile === index ? '#1d2636' : 'white',
-                                },
-                            }}
-                            onClick={() => handleTileClick1(index, subfolder)}
-                        >
-                            {subfolder}
-                        </Button>
-                    );
-                } else {
-                    // Return null or another component if the date is invalid
-                    return null;
-                }
-            })}
-          </Box>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 6 }}>
+          {externalData["Subfolders"].map((subfolder, index) => {
+              const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1, subfolder.substring(6, 8));
+      
+              const isValidDate = (date) => !isNaN(date.getTime());
+      
+              if (!isValidDate(date) && subfolder != 'vanilla') {
+                  return (
+                      <Button
+                          key={index}
+                          variant="contained"
+                          sx={{
+                              minWidth: '30%',
+                              width: 'max-content',
+                              p: 2,
+                              m: 0.5,
+                              backgroundColor: selectedTile === index ? '#1d2636' : 'white',
+                              color: selectedTile === index ? 'white' : '#1d2636',
+                              '&:hover': {
+                                  backgroundColor: selectedTile === index ? '#1d2636' : 'white',
+                              },
+                          }}
+                          onClick={() => handleTileClick1(index, subfolder)}
+                      >
+                          {subfolder}
+                      </Button>
+                  );
+              } else {
+                  return null;
+              }
+          })}
+        </Box>      
           )}
           {dateFolders && (
           <Box sx={{ display: 'flex', mb: 6 }}> 
