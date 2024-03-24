@@ -3,7 +3,7 @@ import { Box, Button, Typography, Paper, List, ListItem, ListItemIcon, useMediaQ
 import { Link } from 'react-router-dom';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ChatIcon from '@mui/icons-material/Chat';
 import PulseLogo from '../images/PulseLogo.png';
 
@@ -32,21 +32,21 @@ const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
         <Typography variant="h4" gutterBottom color='#6366F1'>{business_name}</Typography>
         <List>
           <ListItem sx={{ mb: 2 }}>
-            <ListItemIcon><EventRepeatIcon sx={{ color: 'white' }}/></ListItemIcon>
+            <ListItemIcon><ThumbUpIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-              Periodic
+              Suggestion Box
             </Link>
           </ListItem>
           <ListItem sx={{ mb: 2 }}>
             <ListItemIcon><LocalActivityIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/Events_summary" style={{ color: 'white', textDecoration: 'none' }}>
-              Events
+              Events Feedback
             </Link>
           </ListItem>
           <ListItem sx={{ mb: 2 }}>
             <ListItemIcon><AssignmentIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/Ad_hoc_summary" style={{ color: 'white', textDecoration: 'none' }}>
-              Ad-hoc
+              Ad-hoc Summaries
             </Link>
           </ListItem>
           <ListItem sx={{ mb: 2 }}>

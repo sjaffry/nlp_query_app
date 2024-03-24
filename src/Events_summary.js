@@ -189,7 +189,7 @@ const handleTileClick1 = async (index, eventName) => {
           {errorMsg && (
           <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
-          <Typography variant="h5" gutterBottom>Analyze event reviews</Typography>
+          <Typography variant="h5" gutterBottom>Analyze event feedback</Typography>
           {pageLoading && <CircularProgress color="inherit"/>}
           {externalData && (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 6 }}>

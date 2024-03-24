@@ -85,16 +85,14 @@ const App = ({ signOut, user }) => {
 
   }  
 
-// Call LLM Summary API and get embedded QuickSight dashboard
+// Call LLM Summary API
   const handleTileClick = async (index, asAtDate) => {
     setSummaryLoading(true);
     setSummary(null);
     setRecommendations(null);
     setSelectedTile(index);
     setReviewDate(asAtDate);
-    const dateString = asAtDate.substring(0,4)+'/'+asAtDate.substring(4,6)+'/'+asAtDate.substring(6,8);
-    const encodedDateFrom = encodeURIComponent(dateString);
-    const encodedDateTo = encodeURIComponent(dateString);
+    setReviewCount(null);
 
     // Call LLM Summary API
     const url1 = 'https://foy4lujjik.execute-api.us-west-2.amazonaws.com/Prod';
@@ -124,40 +122,6 @@ const App = ({ signOut, user }) => {
       alert('Session expired! Please refresh the page and try again.');
     });
 
-  }
-
-// Call LLM Q&A API
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    // Form validation
-    if (!query.trim() || !reviewDate) {
-        alert('Select a week and enter a question before submitting.');
-        return;
-      }
-      setSubmitLoading(true);
-      setResponse(null);
-  
-      try {
-        const response = await axios.get('https://yyea5arxea.execute-api.us-west-2.amazonaws.com/Prod', {
-            params: {
-              date_range: reviewDate,
-              query: query
-            },
-            headers: {
-              Authorization: user.signInUserSession.idToken.jwtToken
-            },
-          });
-          setResponse(response.data);
-          setErrorMsg(null);
-      } catch (error) {
-        console.error('Error:', error);
-        setErrorMsg(error.message);
-        setResponse(null);
-        alert('Session expired! Please refresh the page and try again.');
-      }
-
-      setSubmitLoading(false);
   };
 
   return (
@@ -185,10 +149,10 @@ const App = ({ signOut, user }) => {
           {errorMsg && (
           <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
-          <Typography variant="h5" gutterBottom>Analyze periodic reviews</Typography>
+          <Typography variant="h5" gutterBottom>Analyze suggestions</Typography>
           {pageLoading && <CircularProgress color="inherit"/>}
           {externalData && (
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 6 }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 6 }}>
             {externalData["Subfolders"].map((subfolder, index) => {
                 const date = new Date(subfolder.substring(0, 4), subfolder.substring(4, 6) - 1, subfolder.substring(6, 8));
                 const options = { year: 'numeric', month: 'short' };
@@ -206,6 +170,7 @@ const App = ({ signOut, user }) => {
                             sx={{
                                 width: '30%',
                                 p: 2,
+                                m: 0.5,
                                 backgroundColor: selectedTile === index ? '#1d2636' : 'white',
                                 color: selectedTile === index ? 'white' : '#1d2636',
                                 '&:hover': {

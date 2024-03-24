@@ -83,7 +83,7 @@ const Conversational_qna = ({ signOut, user }) => {
           {errorMsg && (
             <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
-          <Typography variant="h5" gutterBottom>Ask questions against all data</Typography>
+          <Typography variant="h5" gutterBottom>Ask questions against all feedback & suggestions</Typography>
             <Box sx={{ mb: 3 }}>
               <form onSubmit={(e) => {
                 handleSubmit(e);

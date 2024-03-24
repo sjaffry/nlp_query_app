@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { Box, Button, Typography, Paper, TextField, CircularProgress, Grid, useMediaQuery, useTheme } from '@mui/material';
-
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = ({
   summaryLoading,
@@ -16,6 +16,8 @@ const Dashboard = ({
   const [isDownloading, setIsDownloading] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const conversational_qnaPage = `/Conversational_qna`;
+  const navigate = useNavigate();
 
   const handleDownloadClick = async (jwtToken, reviewDate, eventName) => {
     
@@ -66,13 +68,18 @@ const Dashboard = ({
         .catch((error) => {
           console.error('Error downloading file:', error);
         });
-  } 
+  };
+  
+  const handleDigDeeperClick = () => {
+    navigate(conversational_qnaPage);
+  };
+
   return (
     <Box>
       <Grid container spacing={isMobile ? 1 : 3} mb={6}>
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2, borderColor: 'black', border: 0.3 }}>
-            <Typography variant="h5" gutterBottom>Summary of {reviewCount} reviews</Typography>
+            <Typography variant="h5" gutterBottom>Summary of {reviewCount} comments</Typography>
             {summaryLoading && <CircularProgress color="inherit"/>}
             <TextField 
               multiline
@@ -111,13 +118,32 @@ const Dashboard = ({
           sx={{
             width: isMobile ? '100%' : '30%', 
             p: 2,
+            m: 0.5,
             color: summary ? 'white' : '#1d2636', 
             backgroundColor: summary ? '#1d2636' : 'white',
+            '&:hover': {
+              backgroundColor: '#1d2636'}
           }}
         >
           Download original responses
         </Button>
         {isDownloading && <CircularProgress color="inherit"/>}
+        <Button 
+          variant="contained" 
+          disabled={!summary || !jwtToken || isDownloading}
+          onClick={handleDigDeeperClick}
+          sx={{
+            width: isMobile ? '100%' : '30%', 
+            p: 2,
+            m: 0.5,
+            color: summary ? 'white' : '#1d2636', 
+            backgroundColor: summary ? '#1d2636' : 'white',
+            '&:hover': {
+              backgroundColor: '#1d2636'}
+          }}
+        >
+          Dig Deeper
+        </Button>
       </Box>
     </Box>
   );
