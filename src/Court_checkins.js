@@ -44,8 +44,10 @@ const Court_checkins = ({ signOut, user }) => {
   };  
   
   useEffect(() => {
-    const initialData = '[{"business_name": "", "checkin_timestamp": "", "player_name": "", "court_number": ""}]'
-    setTennisCheckins(JSON.parse(initialData));
+    const initialDataTennis = '[{"business_name": "", "checkin_timestamp": "", "player_name": "", "court_number": ""}]'
+    const initialDataPickle = '[{"business_name": "", "checkin_timestamp": "", "player_name": "", "court_number": ""}]'
+    setTennisCheckins(JSON.parse(initialDataTennis));
+    setPickleballCheckins(JSON.parse(initialDataPickle));
 
     // Call list court checkins API
     const getAllCheckins = async () => {
