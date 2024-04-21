@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/lambda_layers
 /.pnp
 .pnp.js
 
@@ -13,6 +14,7 @@ App-prod.js
 Events_summary-Test.js
 Events_summary-Prod.js
 Create_event-Test.js
+Create_event-Prod.js
 
 # production
 /build

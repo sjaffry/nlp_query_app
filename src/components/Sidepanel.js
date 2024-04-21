@@ -5,6 +5,7 @@ import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ChatIcon from '@mui/icons-material/Chat';
+import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import PulseLogo from '../images/PulseLogo.png';
 
 const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
@@ -53,6 +54,12 @@ const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
             <ListItemIcon><ChatIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/Conversational_qna" style={{ color: 'white', textDecoration: 'none' }}>
               Chat with AI
+            </Link>
+          </ListItem>
+          <ListItem sx={{ mb: 2 }}>
+            <ListItemIcon><SportsTennisIcon sx={{ color: 'white' }}/></ListItemIcon>
+            <Link to="/Court_checkins" style={{ color: 'white', textDecoration: 'none' }}>
+              Court Checkins
             </Link>
           </ListItem>
         </List>
