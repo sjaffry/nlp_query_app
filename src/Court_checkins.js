@@ -52,8 +52,6 @@ const Court_checkins = ({ signOut, user }) => {
     // Call list court checkins API
     const getAllCheckins = async () => {
       setCheckinsLoading(true);
-      setTennisCheckins(null);
-      setPickleballCheckins(null);
 
       const url1 = 'https://hdv5dh94pi.execute-api.us-west-2.amazonaws.com/Prod';
 

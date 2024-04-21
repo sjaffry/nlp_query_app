@@ -59,7 +59,7 @@ const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
           <ListItem sx={{ mb: 2 }}>
             <ListItemIcon><SportsTennisIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/Court_checkins" style={{ color: 'white', textDecoration: 'none' }}>
-              Court Checkins
+              Court Check-ins
             </Link>
           </ListItem>
         </List>
