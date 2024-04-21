@@ -63,8 +63,12 @@ const Court_checkins = ({ signOut, user }) => {
         }
       })
       .then(response => {
-        setTennisCheckins(response.data.tennis);
-        setPickleballCheckins(response.data.pickleball);
+        if (response.data.tennis && response.data.tennis.length > 0) {
+          setTennisCheckins(response.data.tennis);
+        }
+        if (response.data.pickleball && response.data.pickleball.length > 0) {
+          setPickleballCheckins(response.data.pickleball);
+        }
         setErrorMsg(null);
         setCheckinsLoading(false);
       })
