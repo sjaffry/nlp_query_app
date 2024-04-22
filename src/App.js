@@ -49,7 +49,8 @@ const App = ({ signOut, user }) => {
       try {
         const res = await axios.get('https://xd65osve7l.execute-api.us-west-2.amazonaws.com/Prod', {
           params: {
-            get_events: 'False'
+            get_events: 'False',
+            keep_warm: 'false'
           },           
           headers: {
             Authorization: jwtToken
