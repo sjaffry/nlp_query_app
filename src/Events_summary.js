@@ -55,7 +55,8 @@ const Events_summary = ({ signOut, user }) => {
       try {
         const res = await axios.get('https://xd65osve7l.execute-api.us-west-2.amazonaws.com/Prod', {
           params: {
-            get_events: 'True'
+            get_events: 'True',
+            keep_warm: 'false'
           },           
           headers: {
             Authorization: jwtToken
@@ -102,7 +103,8 @@ const handleTileClick1 = async (index, eventName) => {
   try {
     const res = await axios.get('https://u1z1f2m7z4.execute-api.us-west-2.amazonaws.com/Prod', {
       params: {
-        event_name: eventName
+        event_name: eventName,
+        keep_warm: 'false'
       },  
       headers: {
           Authorization: jwtToken

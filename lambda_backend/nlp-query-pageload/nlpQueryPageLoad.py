@@ -42,12 +42,16 @@ def list_subfolders(bucket_name, prefix):
 def lambda_handler(event, context):
     bucket_name = os.environ['bucket_name']
     get_events = event["queryStringParameters"]['get_events']
+    keep_warm = event["queryStringParameters"]['keep_warm']
     
     # Let's extract the business name from the token by looking at the group memebership of the user
     token = event['headers']['Authorization']
     decoded = decode_jwt(token)
     # We only ever expect the user to be in one group only - business rule
     business_name = decoded['cognito:groups'][0]
+    
+    if keep_warm == "true":
+        return {'body': json.dumps('stay warm!')}
     
     # Now we list all the subfolders for the business name
     if get_events == "True":

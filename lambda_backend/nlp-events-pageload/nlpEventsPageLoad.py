@@ -48,6 +48,10 @@ def lambda_handler(event, context):
     # We only ever expect the user to be in one group only - business rule
     business_name = decoded['cognito:groups'][0]
     event_name = event["queryStringParameters"]['event_name']
+    keep_warm = event["queryStringParameters"]['keep_warm']
+    
+    if keep_warm == "true":
+        return {'body': json.dumps('stay warm!')}
     
     # Now we list all the subfolders for the business name
     prefix = f'transcribe-output/{business_name}/events/{event_name}/'
