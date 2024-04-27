@@ -3,6 +3,8 @@ import json
 import os
 import boto3
 
+s3 = boto3.client('s3')
+
 def decode_base64_url(data):
     """Add padding to the input and decode base64 url"""
     missing_padding = len(data) % 4
@@ -28,7 +30,6 @@ def trimmed_foldername(full_folderpath):
 
 def list_subfolders(bucket_name, prefix):
 
-    s3 = boto3.client('s3')
     response = s3.list_objects_v2(Bucket=bucket_name, Delimiter='/', Prefix=prefix)
     subfolders = []
 

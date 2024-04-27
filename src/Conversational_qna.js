@@ -26,7 +26,8 @@ const Conversational_qna = ({ signOut, user }) => {
   const [errorMsg, setErrorMsg] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sources, setSources] = useState(null);
-  const business_name = user.signInUserSession.idToken.payload['cognito:groups']
+  const businessName = user.signInUserSession.idToken.payload['cognito:groups']
+  const user_name = user.signInUserSession.idToken.payload.given_name
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm')); 
 
@@ -34,37 +35,32 @@ const Conversational_qna = ({ signOut, user }) => {
     setIsSidebarOpen(!isSidebarOpen);
   };  
   
-  useEffect(() => {}, []);
+  const getUnixTime = () => {
+    const now = new Date(); 
+    return Math.floor(now.getTime() / 1000);
+  }
 
-// Call LLM Q&A API
-  const handleSubmit = async (event) => {
-      event.preventDefault();
-      setSubmitLoading(true);
-      setResponse(null);
-      setSources(null);
-      setSubmittedQuery(query);
-
-      try {
-        const response = await axios.get('https://yyea5arxea.execute-api.us-west-2.amazonaws.com/Prod', {
-            params: {
-              query: query
-            },
-            headers: {
-              Authorization: user.signInUserSession.idToken.jwtToken
-            },
-          });
-          //setSources('Sources: '+ response.data['sources']);
-          setSources(response.data['sources']);
-          setResponse(response.data['answer']);
-          setErrorMsg(null);
-      } catch (error) {
-        console.error('Error:', error);
-        setErrorMsg(error.message);
-        setResponse(null);
-      }
-
-      setSubmitLoading(false);
-  };
+  useEffect(() => {
+    try {
+      const res = axios.put('https://9vq4uvv8i3.execute-api.us-west-2.amazonaws.com/Prod',  {}, {
+        params: {
+          user_name: user_name,
+          usage_timestamp: getUnixTime(),
+          page_name: "Conversational_QA",
+          keep_warm: "false",
+          business_name: "FTSC"
+        },           
+        headers: {
+          Authorization: user.signInUserSession.idToken.jwtToken,
+          'Content-Type': 'application/json'
+        },
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Unexpected error. Please report it to front office');        
+    }
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -77,51 +73,13 @@ const Conversational_qna = ({ signOut, user }) => {
         {isMobile && (
           <Button sx={{ color: 'white', backgroundColor: '#1d2636'}} onClick={toggleSidebar}> Menu >> </Button>
         )}
-        <Sidepanel isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} business_name={business_name} />
+        <Sidepanel isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} business_name={businessName} />
         <Box sx={{ width: isMobile ? '80%' : '50%', p: 2, overflow: 'auto' }}>
           <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>Welcome {user.signInUserSession.idToken.payload.given_name}</Typography>
           {errorMsg && (
             <p style={{ color: 'red' }}>{errorMsg}</p>
           )}
-          <Typography variant="h5" gutterBottom>Ask questions against all feedback & suggestions</Typography>
-            <Box sx={{ mb: 3 }}>
-              <form onSubmit={(e) => {
-                handleSubmit(e);
-                setQuery('');
-              }}>
-                <TextField
-                  label="Enter a specific question about any event or any survey"
-                  variant="outlined"
-                  rows={isMobile ? 2 : 3} 
-                  fullWidth
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  sx={{ mb: 1 }}
-                />
-                <Button type="submit" sx={{ color: 'white', backgroundColor: '#1d2636'}} variant="contained">Submit</Button>
-              </form>
-            </Box>
-            {submitLoading && <CircularProgress color="inherit"/>}
-            <Typography variant="h6">{submittedQuery}</Typography>
-            <TextField 
-              sx={{ mb: 2}}
-              multiline
-              variant="outlined" 
-              InputProps={{
-                readOnly: true,
-              }}
-              rows={isMobile ? 10 : 12} 
-              fullWidth 
-              value={response || ''}
-            />
-            {sources && sources.length > 0 && (
-              <>
-                <Typography variant="button">Sources:</Typography>
-                {sources.map((title, index) => (
-                  <div key={index}>{title}</div>
-                ))}
-              </>
-            )}
+          <Typography variant="h5" gutterBottom>Page under maintenance</Typography>
         </Box>
       </Box>
     </ThemeProvider>
