@@ -4,6 +4,7 @@ import os
 import boto3
 
 s3 = boto3.client('s3')
+bucket_name = os.environ['bucket_name']
 
 def decode_base64_url(data):
     """Add padding to the input and decode base64 url"""
@@ -41,7 +42,6 @@ def list_subfolders(bucket_name, prefix):
 
 
 def lambda_handler(event, context):
-    bucket_name = os.environ['bucket_name']
     
     # Let's extract the business name from the token by looking at the group memebership of the user
     token = event['headers']['Authorization']
