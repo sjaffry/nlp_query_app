@@ -57,6 +57,7 @@ const Court_checkins = ({ signOut, user }) => {
 
       axios.get(url1, {
         params: {
+          keep_warm: "false"
         },
         headers: {
           Authorization: user.signInUserSession.idToken.jwtToken
