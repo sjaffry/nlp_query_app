@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button, Typography, Paper, List, ListItem, ListItemIcon, useMediaQuery, useTheme } from '@mui/material';
 import { Link } from 'react-router-dom';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -47,7 +48,7 @@ const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
           <ListItem sx={{ mb: 2 }}>
             <ListItemIcon><AssignmentIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/Ad_hoc_summary" style={{ color: 'white', textDecoration: 'none' }}>
-              Ad-hoc Summaries
+              Ad-hoc Summary
             </Link>
           </ListItem>
           <ListItem sx={{ mb: 2 }}>
@@ -60,6 +61,12 @@ const Sidepanel = ({ business_name, isOpen, toggleSidebar }) => {
             <ListItemIcon><SportsTennisIcon sx={{ color: 'white' }}/></ListItemIcon>
             <Link to="/Court_checkins" style={{ color: 'white', textDecoration: 'none' }}>
               Court Check-ins
+            </Link>
+          </ListItem>
+          <ListItem sx={{ mb: 2 }}>
+            <ListItemIcon><HowToVoteIcon sx={{ color: 'white' }}/></ListItemIcon>
+            <Link to="/Ballots" style={{ color: 'white', textDecoration: 'none' }}>
+              Voting
             </Link>
           </ListItem>
         </List>
